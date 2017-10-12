@@ -1,7 +1,7 @@
 create table TUser
 (
 id UNIQUEIDENTIFIER primary key not null,
-login nvarchar(20) unique not null,
+login nvarchar(45) unique not null,
 email nvarchar(100) unique check(Email like '%@%.%') not null,
 password nvarchar(max) not null,
 )
@@ -10,7 +10,7 @@ create table TNote
 (
 id UNIQUEIDENTIFIER primary key not null,
 creator UNIQUEIDENTIFIER references TUser(ID) on delete cascade not null,
-title nvarchar(20) not null,
+title nvarchar(45) not null,
 content nvarchar(max) not null,
 createDate smalldatetime not null,
 updateDate smalldatetime
@@ -20,7 +20,7 @@ create table TCategory
 (
 id UNIQUEIDENTIFIER primary key not null,
 userId UNIQUEIDENTIFIER references TUser(ID) on delete cascade not null,
-Name nvarchar(25) unique not null
+Name nvarchar(45) unique not null
 )
 
 create table TShare
