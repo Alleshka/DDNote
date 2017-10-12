@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using DigDesNote.Model;
 using System.Data.SqlClient;
@@ -15,7 +15,7 @@ namespace DigDesNote.DataLayer.Sql
         public NoteRepository(String connectionString, CategoryRepository cat)
         {
             _connectionString = connectionString;
-           // _userRepository = us;
+            // _userRepository = us;
             _catRepository = cat;
         }
 
@@ -31,7 +31,7 @@ namespace DigDesNote.DataLayer.Sql
                 _sqclConnection.Open();
                 using (var command = _sqclConnection.CreateCommand())
                 {
-                    command.CommandText = "insert into TRefCategoryNote (noteId, categoryId)" + 
+                    command.CommandText = "insert into TRefCategoryNote (noteId, categoryId)" +
                         "values (@noteId, @categoryId)";
                     command.Parameters.AddWithValue("@noteId", noteId);
                     command.Parameters.AddWithValue("@categoryId", CategoryId);
@@ -51,7 +51,7 @@ namespace DigDesNote.DataLayer.Sql
         public Note Create(String title, String content, Guid creator)
         {
             using (var _sqlConnection = new SqlConnection(_connectionString))
-            {          
+            {
                 Note _note = new Note()
                 {
                     _id = Guid.NewGuid(),
@@ -91,9 +91,9 @@ namespace DigDesNote.DataLayer.Sql
                 _sqlConnection.Open();
                 using (var _command = _sqlConnection.CreateCommand())
                 {
-                    _command.CommandText = $"delete from TCategory where id=@id";
-                    _command.Parameters.AddWithValue("@id", id);
-                    _command.ExecuteNonQueryAsync();
+                    _command.CommandText = $"delete from TNote where id=@noteID"; // Запрос
+                    _command.Parameters.AddWithValue("@noteID", id);
+                    _command.ExecuteNonQuery();
                 }
             }
         }
@@ -148,7 +148,7 @@ namespace DigDesNote.DataLayer.Sql
                         {
                             Note tmp = ReaderGetNote(reader);
                             tmp._categories = _catRepository.GetNoteCategories(tmp._id);
-                            
+
                             yield return tmp;
                         }
                     }
@@ -218,7 +218,60 @@ namespace DigDesNote.DataLayer.Sql
                 _created = reader.GetDateTime(reader.GetOrdinal("createDate")),
                 _updated = reader.GetDateTime(reader.GetOrdinal("updateDate")),
                 _creator = reader.GetGuid(reader.GetOrdinal("creator"))
-        };
+            };
+        }
+
+
+        public IEnumerable<Note> GetShareUserNotes(Guid userID)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var _command = _sqlConnection.CreateCommand())
+                {
+                    _command.CommandText = "select note.id, note.title, note.content, note.creator, note.createDate, note.updateDate from TShare sh inner join TNote note on sh.noteId=note.id where sh.userId = @id";
+                    _command.Parameters.AddWithValue("id", userID);
+                    using (var reader = _command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            yield return GetNote(reader.GetGuid(reader.GetOrdinal("id")));
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Share(Guid noteId, Guid userId)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var command = _sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "insert into TShare (userId, noteId) " +
+                        "values (@userId, @noteId)";
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@noteId", noteId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        public void UnShare(Guid noteId, Guid userId)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var command = _sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "delete from TShare where userId = @userId and noteId = @noteId";
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@noteId", noteId);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

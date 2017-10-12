@@ -48,7 +48,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ReposioryTests.cs" />
+    <Compile Include="CategoryRepositoryTest.cs" />
+    <Compile Include="CommonTestClass.cs" />
+    <Compile Include="NoteRepositoryTest.cs" />
+    <Compile Include="UserRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

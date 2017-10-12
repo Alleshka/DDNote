@@ -101,7 +101,7 @@ namespace DigDesNote.DataLayer.Sql
         /// <returns></returns>
         public IEnumerable<Category> GetUserCategories(Guid userId)
         {
-            using (var _sqlConnection = new SqlConnection())
+            using (var _sqlConnection = new SqlConnection(_connectionSring))
             {
                 _sqlConnection.Open();
                 using (var command = _sqlConnection.CreateCommand())
