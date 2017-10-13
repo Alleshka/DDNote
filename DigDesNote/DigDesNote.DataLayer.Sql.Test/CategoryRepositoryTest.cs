@@ -68,7 +68,6 @@ namespace DigDesNote.DataLayer.Sql.Test
             int j = categoryRepository.GetUserCategories(testUser._id).Count();
 
             Assert.AreEqual(i, j + 1);
-
         }
 
         [TestCleanup]

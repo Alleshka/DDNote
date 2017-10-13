@@ -1,8 +1,8 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using DigDesNote.Model;
 using System.Data.SqlClient;
-
+using System.Linq;
 
 namespace DigDesNote.DataLayer.Sql
 {
@@ -128,40 +128,11 @@ namespace DigDesNote.DataLayer.Sql
         }
 
         /// <summary>
-        /// Получить коллекцию заметок пользователя
-        /// </summary>
-        /// <param name="userID">ID заметки</param>
-        /// <returns></returns>
-        public IEnumerable<Note> GetUserNotes(Guid userID)
-        {
-            using (var _sqlConnection = new SqlConnection(_connectionString))
-            {
-                _sqlConnection.Open();
-                using (var _command = _sqlConnection.CreateCommand())
-                {
-                    _command.CommandText = $"select * from TNote where creator=@id";
-                    _command.Parameters.AddWithValue("@id", userID);
-
-                    using (var reader = _command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Note tmp = ReaderGetNote(reader);
-                            tmp._categories = _catRepository.GetNoteCategories(tmp._id);
-
-                            yield return tmp;
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Удалить заметку из категории
         /// </summary>
         /// <param name="noteId">ID заметки</param>
         /// <param name="CagegoryId">ID категории</param>
-        public void RemoveFromCagegory(Guid noteId, Guid CagegoryId)
+        public void RemoveFromCategory(Guid noteId, Guid CategoryId)
         {
             using (var _sqlConnection = new SqlConnection(_connectionString))
             {
@@ -169,7 +140,7 @@ namespace DigDesNote.DataLayer.Sql
                 using (var _command = _sqlConnection.CreateCommand())
                 {
                     _command.CommandText = "delete from TRefCategoryNote where categoryId = @id and noteId = @noteId";
-                    _command.Parameters.AddWithValue("@id", CagegoryId);
+                    _command.Parameters.AddWithValue("@id", CategoryId);
                     _command.Parameters.AddWithValue("@noteId", noteId);
                     _command.ExecuteNonQuery();
                 }
@@ -221,27 +192,6 @@ namespace DigDesNote.DataLayer.Sql
             };
         }
 
-
-        public IEnumerable<Note> GetShareUserNotes(Guid userID)
-        {
-            using (var _sqlConnection = new SqlConnection(_connectionString))
-            {
-                _sqlConnection.Open();
-                using (var _command = _sqlConnection.CreateCommand())
-                {
-                    _command.CommandText = "select note.id, note.title, note.content, note.creator, note.createDate, note.updateDate from TShare sh inner join TNote note on sh.noteId=note.id where sh.userId = @id";
-                    _command.Parameters.AddWithValue("id", userID);
-                    using (var reader = _command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            yield return GetNote(reader.GetGuid(reader.GetOrdinal("id")));
-                        }
-                    }
-                }
-            }
-        }
-
         public void Share(Guid noteId, Guid userId)
         {
             using (var _sqlConnection = new SqlConnection(_connectionString))
@@ -272,6 +222,68 @@ namespace DigDesNote.DataLayer.Sql
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        /// <summary>
+        /// Получить коллекцию заметок пользователя
+        /// </summary>
+        /// <param name="userID">ID пользователя</param>
+        /// <returns></returns>
+        public IEnumerable<Note> GetUserNotes(Guid userID)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var _command = _sqlConnection.CreateCommand())
+                {
+                    _command.CommandText = $"select * from TNote where creator=@id";
+                    _command.Parameters.AddWithValue("@id", userID);
+
+                    using (var reader = _command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Note tmp = ReaderGetNote(reader);
+                            tmp._categories = _catRepository.GetNoteCategories(tmp._id);
+
+                            yield return tmp;
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Получить коллекцию расшаренных пользователю заметок
+        /// </summary>
+        /// <param name="userID">ID пользователя</param>
+        /// <returns></returns>
+        public IEnumerable<Note> GetShareUserNotes(Guid userID)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var _command = _sqlConnection.CreateCommand())
+                {
+                    _command.CommandText = "select note.id, note.title, note.content, note.creator, note.createDate, note.updateDate from TShare sh inner join TNote note on sh.noteId=note.id where sh.userId = @id";
+                    _command.Parameters.AddWithValue("id", userID);
+                    using (var reader = _command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            yield return GetNote(reader.GetGuid(reader.GetOrdinal("id")));
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Получить коллекцию всех заметок пользователю (расшаренные + созданные)
+        /// </summary>
+        /// <param name="userID">ID заметки</param>
+        /// <returns></returns>
+        public IEnumerable<Note> GetAllUserNotes(Guid userID)
+        {
+            return GetUserNotes(userID).Union(GetShareUserNotes(userID));
         }
     }
 }

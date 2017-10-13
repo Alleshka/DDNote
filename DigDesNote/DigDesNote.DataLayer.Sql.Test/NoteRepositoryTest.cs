@@ -112,7 +112,7 @@ namespace DigDesNote.DataLayer.Sql.Test
 
             noteRepository.AddToCategory(testNote._id, testCategory._id); // Добавляем в категорию 
             int i = categoryRepository.GetNoteCategories(testNote._id).Count();
-            noteRepository.RemoveFromCagegory(testNote._id, testCategory._id); // Удаляем 
+            noteRepository.RemoveFromCategory(testNote._id, testCategory._id); // Удаляем 
             int j = categoryRepository.GetNoteCategories(testCategory._id).Count();
 
             // Assepts 
@@ -182,10 +182,12 @@ namespace DigDesNote.DataLayer.Sql.Test
             int createUs1 = noteRepository.GetUserNotes(testUser1._id).Count();
             int shareUs1 = noteRepository.GetShareUserNotes(testUser1._id).Count();
             int totalUs1 = createUs1 + shareUs1;
+            int totalAllUs1 = noteRepository.GetAllUserNotes(testUser1._id).Count();
 
             int createUs2 = noteRepository.GetUserNotes(testUser2._id).Count();
             int shareUs2 = noteRepository.GetShareUserNotes(testUser2._id).Count();
             int totalUs2 = createUs2 + shareUs2;
+
 
             noteRepository.UnShare(testNote3._id, testUser1._id); // Убираем
             int newUsshar = noteRepository.GetUserNotes(testUser1._id).Count() + noteRepository.GetShareUserNotes(testUser1._id).Count();
@@ -198,6 +200,7 @@ namespace DigDesNote.DataLayer.Sql.Test
             Assert.AreEqual(shareUs2, 0);
             Assert.AreEqual(totalUs2, 2);
             Assert.AreEqual(newUsshar, 3);
+            Assert.AreEqual(totalAllUs1, totalUs1);
         }
 
         [TestMethod]

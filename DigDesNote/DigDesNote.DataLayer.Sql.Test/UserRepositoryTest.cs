@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DigDesNote.Model;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DigDesNote.DataLayer.Sql.Test
 {

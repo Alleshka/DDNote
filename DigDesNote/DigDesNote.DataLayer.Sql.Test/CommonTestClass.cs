@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using DigDesNote.Model;
 
 namespace DigDesNote.DataLayer.Sql.Test
