@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.DataLayer.Sql", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.DataLayer.Sql.Test", "DigDesNote.DataLayer.Sql.Test\DigDesNote.DataLayer.Sql.Test.csproj", "{8776E764-A396-444E-8666-65D71699C2B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.API", "DigDesNote.API\DigDesNote.API.csproj", "{FBF25BB6-06F1-4A3B-B9FF-E7C986AC56B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{8776E764-A396-444E-8666-65D71699C2B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8776E764-A396-444E-8666-65D71699C2B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8776E764-A396-444E-8666-65D71699C2B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBF25BB6-06F1-4A3B-B9FF-E7C986AC56B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBF25BB6-06F1-4A3B-B9FF-E7C986AC56B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBF25BB6-06F1-4A3B-B9FF-E7C986AC56B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBF25BB6-06F1-4A3B-B9FF-E7C986AC56B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

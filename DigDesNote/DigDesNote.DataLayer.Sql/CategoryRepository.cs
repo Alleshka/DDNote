@@ -44,6 +44,17 @@ namespace DigDesNote.DataLayer.Sql
 
             }
         }
+        
+        /// <summary>
+        /// Создание категории
+        /// </summary>
+        /// <param name="category">Категория, которая содержит в себе название категории и ID пользователя</param>
+        /// <returns></returns>
+        public Category Create(Category category)
+        {
+            return Create(category._userId, category._name);
+        }
+
         /// <summary>
         /// Получение информации о категории
         /// </summary>
@@ -137,7 +148,7 @@ namespace DigDesNote.DataLayer.Sql
                 _sqlConnection.Open();
                 using (var _command = _sqlConnection.CreateCommand())
                 {
-                    _command.CommandText = $"select cat.id, cat.Name from TNote note inner join TRefCategoryNote RCN on note.id=RCN.noteId inner join TCategory cat on RCN.categoryId = cat.id where note.id = @id";
+                    _command.CommandText = $"select cat.id, cat.Name, cat.userId from TNote note inner join TRefCategoryNote RCN on note.id=RCN.noteId inner join TCategory cat on RCN.categoryId = cat.id where note.id = @id";
                     _command.Parameters.AddWithValue("id", noteId); 
                     using (var reader = _command.ExecuteReader())
                     {
@@ -147,6 +158,7 @@ namespace DigDesNote.DataLayer.Sql
                             {
                                 _id = reader.GetGuid(reader.GetOrdinal("id")),
                                 _name = reader.GetString(reader.GetOrdinal("name")),
+                                _userId = reader.GetGuid(reader.GetOrdinal("userId"))
                             };
                         }
                     }

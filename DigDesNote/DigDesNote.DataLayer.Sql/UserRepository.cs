@@ -45,12 +45,17 @@ namespace DigDesNote.DataLayer.Sql
                     _command.Parameters.AddWithValue("@login", user._login);
                     _command.Parameters.AddWithValue("@email", user._email);
                     _command.Parameters.AddWithValue("@password", user._pass);
-
                     _command.ExecuteNonQuery();
+
+                    user._pass = null; // Чтобы не возвращать хеш пароля 
 
                     return user;
                 }
             }
+        }
+        public User Create(User user)
+        {
+            return Create(user._login, user._email, user._pass);
         }
 
         /// <summary>
@@ -76,7 +81,7 @@ namespace DigDesNote.DataLayer.Sql
         /// </summary>
         /// <param name="id">ID пользователя</param>
         /// <returns></returns>
-        public User Get(Guid id)
+        public User GetBasicUser(Guid id)
         {
             using (var _sqlConnect = new SqlConnection(_connectionString))
             {
@@ -97,14 +102,18 @@ namespace DigDesNote.DataLayer.Sql
                                 _login = reader.GetString(reader.GetOrdinal("login")),
                                 _email = reader.GetString(reader.GetOrdinal("email"))
                             };
-                            us._categories = _categoryRepository.GetUserCategories(id);
-                            us._notes = _noteRepository.GetUserNotes(id);
-
                             return us;
                         }
                     }
                 }
             }
+        }
+        public User GetFullUser(Guid id)
+        {
+            User tmp = GetBasicUser(id);
+            tmp._categories = _categoryRepository.GetUserCategories(id);
+            tmp._notes = _noteRepository.GetAllUserNotes(id);
+            return tmp;
         }
 
         /// <summary>
@@ -127,9 +136,15 @@ namespace DigDesNote.DataLayer.Sql
                     command.Parameters.AddWithValue("@id", id);
                     command.ExecuteNonQuery();
 
-                    return Get(id);
+                    return GetBasicUser(id);
                 }
             }
         }
+        public User Edit(User user)
+        {
+            return Edit(user._id, user._email, user._pass);
+        }
+
+
     }
 }

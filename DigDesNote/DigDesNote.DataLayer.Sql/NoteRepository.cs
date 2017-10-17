@@ -75,9 +75,19 @@ namespace DigDesNote.DataLayer.Sql
                     _command.Parameters.AddWithValue("@updateDate", _note._created);
 
                     _command.ExecuteNonQuery();
+                    _note._updated = _note._created;
                     return _note;
                 }
             }
+        }
+        /// <summary>
+        /// Добавление заметки
+        /// </summary>
+        /// <param name="note">Заметка, которая хранит в себе заголовок, содержимое и ID создателя</param>
+        /// <returns></returns>
+        public Note Create(Note note)
+        {
+            return Create(note._title, note._content, note._creator);
         }
 
         /// <summary>
@@ -94,35 +104,6 @@ namespace DigDesNote.DataLayer.Sql
                     _command.CommandText = $"delete from TNote where id=@noteID"; // Запрос
                     _command.Parameters.AddWithValue("@noteID", id);
                     _command.ExecuteNonQuery();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Получить информацию о заметке
-        /// </summary>
-        /// <param name="noteId">ID заметки</param>
-        /// <returns></returns>
-        public Note GetNote(Guid noteId)
-        {
-            using (var _sqlConnection = new SqlConnection(_connectionString))
-            {
-                _sqlConnection.Open();
-                using (var command = _sqlConnection.CreateCommand())
-                {
-                    command.CommandText = "select * from TNote where id=@id";
-                    command.Parameters.AddWithValue("id", noteId);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (!reader.Read()) throw new Exception($"Заметка с id {noteId} не найдена");
-                        else
-                        {
-                            Note note = ReaderGetNote(reader);
-                            note._categories = _catRepository.GetNoteCategories(note._id);
-                            return note;
-                        }
-                    }
                 }
             }
         }
@@ -169,27 +150,9 @@ namespace DigDesNote.DataLayer.Sql
 
                     _command.ExecuteNonQuery();
 
-                    return GetNote(id);
+                    return GetBasicNote(id);
                 }
             }
-        }
-
-        /// <summary>
-        /// Получает часть параметров
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <returns>Id, title, content, createDate, updateDate, создателя </returns>
-        private Note ReaderGetNote(SqlDataReader reader)
-        {
-            return new Note()
-            {
-                _id = reader.GetGuid(reader.GetOrdinal("id")),
-                _title = reader.GetString(reader.GetOrdinal("title")),
-                _content = reader.GetString(reader.GetOrdinal("content")),
-                _created = reader.GetDateTime(reader.GetOrdinal("createDate")),
-                _updated = reader.GetDateTime(reader.GetOrdinal("updateDate")),
-                _creator = reader.GetGuid(reader.GetOrdinal("creator"))
-            };
         }
 
         public void Share(Guid noteId, Guid userId)
@@ -243,9 +206,7 @@ namespace DigDesNote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-                            Note tmp = ReaderGetNote(reader);
-                            tmp._categories = _catRepository.GetNoteCategories(tmp._id);
-
+                            Note tmp = GetBasicNote(reader.GetGuid(reader.GetOrdinal("id")));
                             yield return tmp;
                         }
                     }
@@ -270,7 +231,7 @@ namespace DigDesNote.DataLayer.Sql
                     {
                         while (reader.Read())
                         {
-                            yield return GetNote(reader.GetGuid(reader.GetOrdinal("id")));
+                            yield return GetBasicNote(reader.GetGuid(reader.GetOrdinal("id")));
                         }
                     }
                 }
@@ -284,6 +245,90 @@ namespace DigDesNote.DataLayer.Sql
         public IEnumerable<Note> GetAllUserNotes(Guid userID)
         {
             return GetUserNotes(userID).Union(GetShareUserNotes(userID));
+        }
+
+        /// <summary>
+        /// Получить основную информацию о заметке (всё, кроме категорий)
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
+        public Note GetBasicNote(Guid noteId)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var command = _sqlConnection.CreateCommand())
+                {
+                    command.CommandText = "select * from TNote where id=@id";
+                    command.Parameters.AddWithValue("id", noteId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (!reader.Read()) throw new Exception($"Заметка с id {noteId} не найдена");
+                        else
+                        {
+                            Note note = ReaderGetNote(reader);
+                            return note;
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Получить всю информацию о заметке (включая категории)
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns></returns>
+        public Note GetFullNote(Guid noteId)
+        {
+            Note tmp = GetBasicNote(noteId);
+            tmp._categories = _catRepository.GetNoteCategories(noteId);
+            tmp._shares = GetShares(noteId);
+            return tmp;
+        }
+
+        /// <summary>
+        /// Получает часть параметров
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns>Id, title, content, createDate, updateDate, создателя </returns>
+        private Note ReaderGetNote(SqlDataReader reader)
+        {
+            return new Note()
+            {
+                _id = reader.GetGuid(reader.GetOrdinal("id")),
+                _title = reader.GetString(reader.GetOrdinal("title")),
+                _content = reader.GetString(reader.GetOrdinal("content")),
+                _created = reader.GetDateTime(reader.GetOrdinal("createDate")),
+                _updated = reader.GetDateTime(reader.GetOrdinal("updateDate")),
+                _creator = reader.GetGuid(reader.GetOrdinal("creator"))
+            };
+        }
+
+        /// <summary>
+        /// Получить все шары для заметки
+        /// </summary>
+        /// <param name="noteId">ID заметки</param>
+        /// <returns></returns>
+        public IEnumerable<Guid> GetShares(Guid noteId)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var _command = _sqlConnection.CreateCommand())
+                {
+                    _command.CommandText = "select userId from TShare where noteId=@noteId";
+                    _command.Parameters.AddWithValue("@noteId", noteId);
+
+                    using (var reader = _command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            yield return reader.GetGuid(reader.GetOrdinal("userId"));
+                        }
+                    }
+                }
+            }
         }
     }
 }

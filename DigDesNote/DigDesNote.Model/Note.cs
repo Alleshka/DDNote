@@ -14,6 +14,6 @@ namespace DigDesNote.Model
         public DateTime _updated { get; set; } // Дата редактирования 
 
         public IEnumerable<Category> _categories { get; set; } // Список категорий 
-        public IEnumerable<User> _shares { get; set; } // Список расшаренных пользователей
+        public IEnumerable<Guid> _shares { get; set; } // Список расшаренных пользователей
     }
 }
