@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DigDesNote.API</name>
+    </assembly>
+    <members>
+        <member name="T:DigDesNote.API.Controllers.CategoryController">
+            <summary>
+            Управление пользователями
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.#ctor">
+            <summary>
+            Конструктор
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.GetCategoryInfo(System.Guid)">
+            <summary>
+            Получить информацию о категории
+            </summary>
+            <param name="id">ID категории</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.CreateCategory(DigDesNote.Model.Category)">
+            <summary>
+            Создать категорию
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.CreateCategory(System.String,System.Guid)">
+            <summary>
+            Создать категорию
+            </summary>
+            <param name="name">Имя категории</param>
+            <param name="id">ID пользователя</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.UpdateCategory(DigDesNote.Model.Category)">
+            <summary>
+            Обновить категорию
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.UpdateCategory(System.Guid,System.String)">
+            <summary>
+            Обновить категорию
+            </summary>
+            <param name="id"></param>
+            <param name="newName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.DeleteCategory(System.Guid)">
+            <summary>
+            Удалить категорию
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.GetBasicInfo(System.Guid)">
+            <summary>
+            Получить основную информацию о заметке
+            </summary>
+            <param name="id">ID заметки</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.GetFullInfo(System.Guid)">
+            <summary>
+            Получить полную информацию о заметке 
+            </summary>
+            <param name="id">ID заметки</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.GetCategories(System.Guid)">
+            <summary>
+            Получить категории заметки
+            </summary>
+            <param name="id">ID заметки</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.GetShares(System.Guid)">
+            <summary>
+            Узнать кому заметка расшарена
+            </summary>
+            <param name="id">ID заметки</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.DeleteNote(System.Guid)">
+            <summary>
+            Удалить заметку
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.UpdateNote(System.Guid,DigDesNote.Model.Note)">
+            <summary>
+            Обновить заметку
+            </summary>
+            <param name="id">ID заметки</param>
+            <param name="note">Структура заметки (может не содержать ID)</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.UpdateNote(DigDesNote.Model.Note)">
+            <summary>
+            Обновить заметку
+            </summary>
+            <param name="note">Стукрута заметки (Должна содержать ID)</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.Create(DigDesNote.Model.Note)">
+            <summary>
+            Создать заметку
+            </summary>
+            <param name="note"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.Share(System.Guid,System.Guid)">
+            <summary>
+            Расшарить заметку
+            </summary>
+            <param name="id">ID заметки</param>
+            <param name="userId">ID пользователя</param>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.UnShare(System.Guid,System.Guid)">
+            <summary>
+            Убрать шару пользователю
+            </summary>
+            <param name="id">ID заметки</param>
+            <param name="userId">ID пользователя</param>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.AddCategory(System.Guid,System.Guid)">
+            <summary>
+            Добавить заметку в категорию
+            </summary>
+            <param name="id">ID заметки</param>
+            <param name="categoryId">ID категории</param>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.DeleteCategory(System.Guid,System.Guid)">
+            <summary>
+            Убрать заметку из категории
+            </summary>
+            <param name="id">ID заметки</param>
+            <param name="categoryId">ID категории</param>
+        </member>
+        <member name="T:DigDesNote.API.Controllers.UserController">
+            <summary>
+            Управление пользователями
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.GetBasicInfo(System.Guid)">
+            <summary>
+            Получить основную информацию о пользователе (id, логин, почту)
+            </summary>
+            <param name="id">Уникальные идентификатор пользователя</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.GetFullInfo(System.Guid)">
+            <summary>
+            Получить всю информацию о пользователе (основная + основная информация о заметках пользователя + информация о категориях пользователя)
+            </summary>
+            <param name="id">ID пользователя</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.GetUserCategories(System.Guid)">
+            <summary>
+            Получить информацию о категориях пользователя пользователя
+            </summary>
+            <param name="id">ID пользователя</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.GetUserNotes(System.Guid)">
+            <summary>
+            Получить основную информацию о всех заметках пользователя
+            </summary>
+            <param name="id">ID пользователя</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.CreateUser(DigDesNote.Model.User)">
+            <summary>
+            Создание нового пользователя
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.DeleteUser(System.Guid)">
+            <summary>
+            Удалить пользователя
+            </summary>
+            <param name="id"></param>
+        </member>
+    </members>
+</doc>

@@ -10,11 +10,13 @@ using DigDesNote.DataLayer.Sql;
 
 namespace DigDesNote.API.Controllers
 {
+    /// <summary>
+    /// Управление пользователями
+    /// </summary>
     public class UserController : ApiController
     {
         private IUsersRepository _userRepository;
         private String _connectionString = @"Data Source=DESKTOP-H4JQP0V;Initial Catalog=NoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-
         public UserController()
         {
             _userRepository = new UserRepository(_connectionString, new NoteRepository(_connectionString, new CategoryRepository(_connectionString)), new CategoryRepository(_connectionString));
@@ -90,6 +92,7 @@ namespace DigDesNote.API.Controllers
         {
             _userRepository.Delete(id);
         }
+
 
         [HttpPut]
         [Route("api/user/{id}/update")]
