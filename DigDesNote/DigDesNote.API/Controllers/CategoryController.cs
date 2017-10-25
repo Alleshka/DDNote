@@ -32,6 +32,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/category/{id}")]
         public Category GetCategoryInfo(Guid id)
         {
+            Logger.Log.Instance.Info($"Получить информацию о категории {id}");
             return _categoriesRepository.Get(id);
         }
 
@@ -41,9 +42,10 @@ namespace DigDesNote.API.Controllers
         /// <param name="category"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/category/create")]
+        [Route("api/category")]
         public Category CreateCategory([FromBody]Category category)
         {
+            Logger.Log.Instance.Info($"Пользователь {category._userId} создал категорю {category._name}");
             return _categoriesRepository.Create(category);
         }
 
@@ -54,9 +56,10 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID пользователя</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/category/create/{name}/user/{id}")]
+        [Route("api/category/{name}/{id}")]
         public Category CreateCategory(String name, Guid id)
         {
+            Logger.Log.Instance.Info($"Пользователь {id} создал категорю {name}");
             return _categoriesRepository.Create(id, name);
         }
 
@@ -66,9 +69,10 @@ namespace DigDesNote.API.Controllers
         /// <param name="category"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("api/category/{id}/update")]
+        [Route("api/category/{id}")]
         public Category UpdateCategory(Category category)
         {
+            Logger.Log.Instance.Info($"Попытка переименовать категорию {category._id} в {category._name}");
             return _categoriesRepository.Edit(category._id, category._name);
         }
 
@@ -79,9 +83,10 @@ namespace DigDesNote.API.Controllers
         /// <param name="newName"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("api/category/{id}/update/{newName}")]
+        [Route("api/category/{id}/{newName}")]
         public Category UpdateCategory(Guid id, String newName)
         {
+            Logger.Log.Instance.Info($"Попытка переименовать категорию {id} в {newName}");
             return _categoriesRepository.Edit(id, newName);
         }
 
@@ -90,10 +95,12 @@ namespace DigDesNote.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete]
-        [Route("api/category/{id}/delete")]
+        [Route("api/category/{id}")]
         public void DeleteCategory(Guid id)
         {
+            Logger.Log.Instance.Info($"Попытка удалить категорию {id}");
             _categoriesRepository.Delete(id);
+            Logger.Log.Instance.Info($"Категория {id} была удалена");
         }
     }
 }

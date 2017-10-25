@@ -31,6 +31,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/user/{id}")]
         public User GetBasicInfo(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение основной информации о пользователе {id}");
             return _userRepository.GetBasicUser(id);
         }
 
@@ -43,6 +44,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/user/{id}/full")]
         public User GetFullInfo(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение полной информации о пользователе {id}");
             return _userRepository.GetFullUser(id);
         }
 
@@ -55,6 +57,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/user/{id}/categories")]
         public IEnumerable<Category> GetUserCategories(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение категорий пользователе {id}");
             return _userRepository.GetFullUser(id)._categories;
         }
 
@@ -67,6 +70,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/user/{id}/notes")]
         public IEnumerable<Note> GetUserNotes(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
             return _userRepository.GetFullUser(id)._notes;
         }
 
@@ -76,9 +80,10 @@ namespace DigDesNote.API.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/user/create")]
+        [Route("api/user")]
         public User CreateUser([FromBody]User user)
         {
+            Logger.Log.Instance.Info($"Cоздание пользователя c параметрами: login = {user._login}, email = {user._email};");
             return _userRepository.Create(user);
         }
 
@@ -87,24 +92,39 @@ namespace DigDesNote.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete]
-        [Route("api/user/{id}/delete")]
+        [Route("api/user/{id}")]
         public void DeleteUser(Guid id)
         {
+            Logger.Log.Instance.Info($"Начато удаление пользователя с id = {id};");
             _userRepository.Delete(id);
+            Logger.Log.Instance.Info($"Удаление пользователя с id = {id} успешно завершено");
         }
 
 
+        /// <summary>
+        /// Редактирование пользователя
+        /// </summary>
+        /// <param name="id">ID пользователя</param>
+        /// <param name="user">Новое содержимое</param>
+        /// <returns></returns>
         [HttpPut]
-        [Route("api/user/{id}/update")]
+        [Route("api/user/{id}")]
         public User UpdateUser(Guid id, [FromBody]User user)
         {
-            return _userRepository.Edit(id, user._email, user._pass);
+                Logger.Log.Instance.Info($"Внесение изменений в пользователя с id = {id}");
+                return _userRepository.Edit(id, user._email, user._pass);
         }
 
+        /// <summary>
+        /// Редактирование пользователя
+        /// </summary>
+        /// <param name="user">Содержимое для смены. Необходимо указание id</param>
+        /// <returns></returns>
         [HttpPut]
-        [Route("api/user/update")]
+        [Route("api/user")]
         public User UpdateUser([FromBody]User user)
         {
+            Logger.Log.Instance.Info($"Внесение изменений в пользователя с id = {user._id}");
             return _userRepository.Edit(user._id, user._email, user._pass);
         }
     }

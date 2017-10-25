@@ -29,6 +29,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}")]
         public Note GetBasicInfo(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение основной информации о заметке {id}");
             return _notesRepository.GetBasicNote(id);
         }
 
@@ -41,6 +42,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/full")]
         public Note GetFullInfo(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение полной информации о заметке {id}");
             return _notesRepository.GetFullNote(id);
         }
 
@@ -53,6 +55,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/categories")]
         public IEnumerable<Category> GetCategories(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение категорий из заметки {id}");
             return _notesRepository.GetFullNote(id)._categories;
         }
 
@@ -65,6 +68,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/shares")]
         public IEnumerable<Guid> GetShares(Guid id)
         {
+            Logger.Log.Instance.Info($"Получение информации о пользователях, которым доступна заметка  {id}");
             return _notesRepository.GetFullNote(id)._shares;
         }
 
@@ -76,7 +80,9 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/delete")]
         public void DeleteNote(Guid id)
         {
+            Logger.Log.Instance.Info($"Начато удаление заметки {id}");
             _notesRepository.Delete(id);
+            Logger.Log.Instance.Info($"Удаление заметки {id} завершено");
         }
 
         /// <summary>
@@ -89,6 +95,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/update")]
         public Note UpdateNote(Guid id, Note note)
         {
+            Logger.Log.Instance.Info($"Внесение изменений в заметку {id}: title = {note._title}, content = {note._content}");
             return _notesRepository.Edit(id, note._title, note._content);
         }
 
@@ -101,6 +108,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/update")]
         public Note UpdateNote([FromBody]Note note)
         {
+            Logger.Log.Instance.Info($"Внесение изменений в заметку {note._id}: title = {note._title}, content = {note._content}");
             return _notesRepository.Edit(note._id, note._title, note._content);
         }
 
@@ -113,6 +121,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/create")]
         public Note Create([FromBody]Note note)
         {
+            Logger.Log.Instance.Info($"Создание заметки с параметрами: title = {note._title}, content = {note._content}, creator = {note._creator}");
             return _notesRepository.Create(note);
         }
 
@@ -125,6 +134,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/share/{userId}")]
         public void Share(Guid id, Guid userId)
         {
+            Logger.Log.Instance.Info($"Расшарить заметку {id} пользователю {userId}");
             _notesRepository.Share(id, userId);
         }
 
@@ -137,6 +147,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/unshare/{userId}")]
         public void UnShare(Guid id, Guid userId)
         {
+            Logger.Log.Instance.Info($"Убрать заметку {id} у пользователя {userId}");
             _notesRepository.UnShare(id, userId);
         }
 
@@ -149,6 +160,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/addcategory/{categoryId}")]
         public void AddCategory(Guid id, Guid categoryId)
         {
+            Logger.Log.Instance.Info($"Добавить заметку {id} в категорию {categoryId}");
             _notesRepository.AddToCategory(id, categoryId);
         }
 
@@ -161,6 +173,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/note/{id}/delcategory/{categoryId}")]
         public void DeleteCategory(Guid id, Guid categoryId)
         {
+            Logger.Log.Instance.Info($"Убрать заметку {id} из категории {categoryId}");
             _notesRepository.RemoveFromCategory(id, categoryId);
         }
     }

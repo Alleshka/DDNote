@@ -9,11 +9,6 @@
             Управление пользователями
             </summary>
         </member>
-        <member name="M:DigDesNote.API.Controllers.CategoryController.#ctor">
-            <summary>
-            Конструктор
-            </summary>
-        </member>
         <member name="M:DigDesNote.API.Controllers.CategoryController.GetCategoryInfo(System.Guid)">
             <summary>
             Получить информацию о категории
@@ -186,6 +181,14 @@
             Удалить пользователя
             </summary>
             <param name="id"></param>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.UpdateUser(System.Guid,DigDesNote.Model.User)">
+            <summary>
+            Редактирование пользователя
+            </summary>
+            <param name="id">ID пользователя</param>
+            <param name="user">Новое содержимое</param>
+            <returns></returns>
         </member>
     </members>
 </doc>

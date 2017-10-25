@@ -51,7 +51,7 @@ namespace DigDesNote.DataLayer.Sql.Test
             testUser = userRepository.Create(testUser._login, testUser._email, testUser._pass);
             testNote = noteRepository.Create(testNote._title, testNote._content, testUser._id);
 
-            Note noteDb = noteRepository.GetNote(testNote._id);
+            Note noteDb = noteRepository.GetBasicNote(testNote._id);
 
             _tmpUs.Add(testUser);
 
@@ -136,7 +136,7 @@ namespace DigDesNote.DataLayer.Sql.Test
             _tmpUs.Add(testUser);
             testNote = noteRepository.Create(testNote._title, testNote._content, testUser._id); // Создали заметку 
             noteRepository.Edit(testNote._id, "Я новый заголовок", "А я новое содержимое");
-            Note newNote = noteRepository.GetNote(testNote._id);
+            Note newNote = noteRepository.GetBasicNote(testNote._id);
 
             // Asserts
             Assert.AreEqual(testNote._id, newNote._id);

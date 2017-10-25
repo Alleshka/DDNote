@@ -56,6 +56,9 @@
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
     </Reference>
@@ -107,6 +110,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -131,6 +140,10 @@
     <ProjectReference Include="..\DigDesNote.Model\DigDesNote.Model.csproj">
       <Project>{0b2d24b1-b006-4847-97f9-65fd519a13a3}</Project>
       <Name>DigDesNote.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DigDesNote\DigDesNote.Logger.csproj">
+      <Project>{7d76cda7-5d53-4cf1-af36-4ae7697730ae}</Project>
+      <Name>DigDesNote.Logger</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -1,0 +1,8 @@
+2017-10-25 14:42:29.4367|INFO|DigDesNote.Logger.Log|Cоздание пользователя c параметрами: login = acccdcdsadxуdscscdddasdddsdsxadsab, email = abcasddcddуxsdddasdddxsdsafs@gr.ru;
+2017-10-25 14:47:15.8128|INFO|DigDesNote.Logger.Log|Начато удаление пользователя с id = b6f749eb-16bd-4d88-a935-cc224134eaba;
+2017-10-25 14:47:16.1329|INFO|DigDesNote.Logger.Log|Удаление пользователя с id = b6f749eb-16bd-4d88-a935-cc224134eaba успешно завершено
+2017-10-25 14:47:30.9962|INFO|DigDesNote.Logger.Log|Начато удаление пользователя с id = b6f749eb-16bd-4d88-a935-cc224134eaba;
+2017-10-25 14:47:31.0022|INFO|DigDesNote.Logger.Log|Удаление пользователя с id = b6f749eb-16bd-4d88-a935-cc224134eaba успешно завершено
+2017-10-25 15:02:33.6565|INFO|DigDesNote.Logger.Log|Cоздание пользователя c параметрами: login = acccdcdsadxуdscscdddasdddsdsxadsab, email = abcasddcddуxsdddasdddxsdsafs@gr.ru;
+2017-10-25 15:02:33.7118|INFO|DigDesNote.Logger.Log|Пользователь 7816a6fa-5110-4fb5-9b13-7b813c131910 успешно создан
+2017-10-25 15:02:53.9772|INFO|DigDesNote.Logger.Log|Cоздание пользователя c параметрами: login = acccdcdsadxуdscscdddasdddsdsxadsab, email = abcasddcddуxsdddasdddxsdsafs@gr.ru;

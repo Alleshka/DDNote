@@ -28,7 +28,7 @@ namespace DigDesNote.DataLayer.Sql.Test
             User usDb = userRepository.Create(testUser._login, testUser._email, testUser._pass); // Добавляем пользователя
             _tmpUs.Add(usDb);
 
-            testUser = userRepository.Get(usDb._id);
+            testUser = userRepository.GetBasicUser(usDb._id);
 
             // Asserts
             Assert.AreEqual(usDb._login, testUser._login);
