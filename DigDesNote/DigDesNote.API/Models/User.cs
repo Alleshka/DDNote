@@ -42,9 +42,13 @@ namespace DigDesNote.API.Models
         public String _password { get; set; }
     }
 
-    public class EditUser : CreateUser
+    public class EditUser
     {
         [Required(ErrorMessage ="Укажите ID пользователя")]
         public Guid _id { get; set; }
+        [Required(ErrorMessage = "Укажите e-mail пользователя (_email)")]
+        public String _email { get; set; } // Почта пользователя 
+        [Required(ErrorMessage = "Укажите пароль пользователя (_password)")]
+        public String _password { get; set; }
     }
 }

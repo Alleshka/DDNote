@@ -36,6 +36,7 @@ bld/
 # NUNIT
 *.VisualState.xml
 TestResult.xml
+*txt
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
@@ -297,3 +298,7 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+*.txt
+*.txt
+DigDesNote/DigDesNote.API/Logs/errorlog.txt
+DigDesNote/DigDesNote.API/Logs/loglist.txt

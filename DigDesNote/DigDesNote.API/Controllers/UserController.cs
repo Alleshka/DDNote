@@ -150,9 +150,11 @@ namespace DigDesNote.API.Controllers
         public BasicUser UpdateUser([FromBody]EditUser user)
         {
             Logger.Log.Instance.Info($"Попытка внесения изменений в пользователя с id = {user._id}");
+            if (_userRepository.GetBasicUser(user._id) == null) throw new NoFoundException($"Пользователь {user._id} не найден");
 
             context = new ValidationContext(user);
             result = new List<ValidationResult>();
+
 
             if (!Validator.TryValidateObject(user, context, result))
             {
