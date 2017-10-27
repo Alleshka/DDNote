@@ -93,7 +93,7 @@ namespace DigDesNote.DataLayer.Sql
 
                     using (var reader = _command.ExecuteReader())
                     {
-                        if (!reader.Read()) throw new Exception($"Пользователь с id {id} не найден");
+                        if (!reader.Read()) return null;
                         else
                         {
                             User us = new User()
@@ -111,6 +111,7 @@ namespace DigDesNote.DataLayer.Sql
         public User GetFullUser(Guid id)
         {
             User tmp = GetBasicUser(id);
+            if (tmp == null) return null;
             tmp._categories = _categoryRepository.GetUserCategories(id);
             tmp._notes = _noteRepository.GetAllUserNotes(id);
             return tmp;

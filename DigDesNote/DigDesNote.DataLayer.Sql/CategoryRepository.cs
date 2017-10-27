@@ -39,6 +39,7 @@ namespace DigDesNote.DataLayer.Sql
                     _command.Parameters.AddWithValue("@name", _cat._name);
 
                     _command.ExecuteNonQuery(); // Выполняем запрос
+                    _cat._userId = userId;
                     return _cat;
                 }
 
@@ -72,7 +73,7 @@ namespace DigDesNote.DataLayer.Sql
 
                     using (var reader = command.ExecuteReader())
                     {
-                        if (!reader.Read()) throw new Exception();
+                        if (!reader.Read()) return null;
                         else
                         {
                             return new Category()
@@ -98,9 +99,9 @@ namespace DigDesNote.DataLayer.Sql
                 _sqlConnection.Open();
                 using (var _command = _sqlConnection.CreateCommand())
                 {
-                    _command.CommandText = $"delete from TCategory where id=@categoryId"; // Запрос
+                    _command.CommandText = "delete from TCategory where id=@categoryId"; // Запрос
                     _command.Parameters.AddWithValue("@categoryId", categoryId);
-                    _command.ExecuteNonQueryAsync();
+                    _command.ExecuteNonQuery();
                 }
             }
         }

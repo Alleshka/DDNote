@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using DigDesNote.Model;
 using DigDesNote.DataLayer;
 using DigDesNote.DataLayer.Sql;
+using System.ComponentModel.DataAnnotations;
+using DigDesNote.API.Models;
 
 namespace DigDesNote.API.Controllers
 {
@@ -14,6 +13,9 @@ namespace DigDesNote.API.Controllers
     {
         private INotesRepository _notesRepository;
         private String _connectionString = @"Data Source=DESKTOP-H4JQP0V;Initial Catalog=NoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+        private List<ValidationResult> result;
+        private ValidationContext context;
 
         public NoteController()
         {
@@ -26,11 +28,15 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <returns></returns>
         [HttpGet]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}")]
-        public Note GetBasicInfo(Guid id)
+        public BasicNote GetBasicInfo(Guid id)
         {
-            Logger.Log.Instance.Info($"Получение основной информации о заметке {id}");
-            return _notesRepository.GetBasicNote(id);
+            Logger.Log.Instance.Info($"Попытка получения основной информации о заметке {id}");
+
+            Note note = _notesRepository.GetBasicNote(id);
+            if (note == null) throw new NoFoundException($"Заметка с id = {id} не найдена");
+            else return new BasicNote(note);
         }
 
         /// <summary>
@@ -39,10 +45,13 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <returns></returns>
         [HttpGet]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}/full")]
         public Note GetFullInfo(Guid id)
         {
-            Logger.Log.Instance.Info($"Получение полной информации о заметке {id}");
+            Logger.Log.Instance.Info($"Попытка получения полной информации о заметке {id}");
+            Note note = _notesRepository.GetBasicNote(id);
+            if(note==null) throw new NoFoundException($"Заметка с id = {id} не найдена");
             return _notesRepository.GetFullNote(id);
         }
 
@@ -52,10 +61,12 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <returns></returns>
         [HttpGet]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}/categories")]
         public IEnumerable<Category> GetCategories(Guid id)
         {
             Logger.Log.Instance.Info($"Получение категорий из заметки {id}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NoFoundException($"Заметка {id} не найдена");
             return _notesRepository.GetFullNote(id)._categories;
         }
 
@@ -65,10 +76,12 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <returns></returns>
         [HttpGet]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}/shares")]
         public IEnumerable<Guid> GetShares(Guid id)
         {
-            Logger.Log.Instance.Info($"Получение информации о пользователях, которым доступна заметка  {id}");
+            Logger.Log.Instance.Info($"Получение информации о пользователях, которым доступна заметка {id}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NoFoundException($"Заметка {id} не найдена");
             return _notesRepository.GetFullNote(id)._shares;
         }
 
@@ -77,27 +90,30 @@ namespace DigDesNote.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete]
-        [Route("api/note/{id}/delete")]
+        [CustomExceptionAtribute]
+        [Route("api/note/{id}")]
         public void DeleteNote(Guid id)
         {
             Logger.Log.Instance.Info($"Начато удаление заметки {id}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NoFoundException($"Заметка {id} не найдена");
             _notesRepository.Delete(id);
             Logger.Log.Instance.Info($"Удаление заметки {id} завершено");
         }
 
-        /// <summary>
-        /// Обновить заметку
-        /// </summary>
-        /// <param name="id">ID заметки</param>
-        /// <param name="note">Структура заметки (может не содержать ID)</param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("api/note/{id}/update")]
-        public Note UpdateNote(Guid id, Note note)
-        {
-            Logger.Log.Instance.Info($"Внесение изменений в заметку {id}: title = {note._title}, content = {note._content}");
-            return _notesRepository.Edit(id, note._title, note._content);
-        }
+        ///// <summary>
+        ///// Обновить заметку
+        ///// </summary>
+        ///// <param name="id">ID заметки</param>
+        ///// <param name="note">Структура заметки (может не содержать ID)</param>
+        ///// <returns></returns>
+        //[HttpPut]
+        //[CustomExceptionAtribute]
+        //[Route("api/note/{id}")]
+        //public Note UpdateNote(Guid id, UpdateNote note)
+        //{
+        //    Logger.Log.Instance.Info($"Внесение изменений в заметку {id}: title = {note._title}, content = {note._content}");
+        //    return _notesRepository.Edit(id, note._title, note._content);
+        //}
 
         /// <summary>
         /// Обновить заметку
@@ -105,11 +121,28 @@ namespace DigDesNote.API.Controllers
         /// <param name="note">Стукрута заметки (Должна содержать ID)</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("api/note/update")]
-        public Note UpdateNote([FromBody]Note note)
+        [CustomExceptionAtribute]
+        [Route("api/note")]
+        public Note UpdateNote([FromBody]UpdateNote note)
         {
-            Logger.Log.Instance.Info($"Внесение изменений в заметку {note._id}: title = {note._title}, content = {note._content}");
-            return _notesRepository.Edit(note._id, note._title, note._content);
+            Logger.Log.Instance.Info($"Попытка внесения изменений в заметку {note._id}: title = {note._title}, content = {note._content}");
+            if (_notesRepository.GetBasicNote(note._id) == null) throw new NoFoundException($"Заметка {note._id} не найдена");
+
+            context = new ValidationContext(note);
+            result = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(note, context, result))
+            {
+                String message = "Невозможно изменить заметку. Указаны не все параметры: ";
+                foreach (var error in result) message += Environment.NewLine + error.ErrorMessage;
+                throw new ModelNotValid(message);
+            }
+            else
+            {
+                Note nt = _notesRepository.Edit(note._id, note._title, note._content);
+                Logger.Log.Instance.Info($"Заметка {note._id} была изменена");
+                return nt;
+            }
         }
 
         /// <summary>
@@ -118,11 +151,27 @@ namespace DigDesNote.API.Controllers
         /// <param name="note"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/note/create")]
-        public Note Create([FromBody]Note note)
+        [CustomExceptionAtribute]
+        [Route("api/note")]
+        public Note Create([FromBody]CreateNote note)
         {
-            Logger.Log.Instance.Info($"Создание заметки с параметрами: title = {note._title}, content = {note._content}, creator = {note._creator}");
-            return _notesRepository.Create(note);
+            Logger.Log.Instance.Info($"Попытка создания заметки с параметрами: title = {note._title}, content = {note._content}, creator = {note._creator}");
+
+            context = new ValidationContext(note);
+            result = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(note, context, result))
+            {
+                String message = "Невозможно создать заметку. Указаны не все параметры: ";
+                foreach (var error in result) message += Environment.NewLine + error.ErrorMessage;
+                throw new ModelNotValid(message);
+            }
+            else
+            {
+                Note nt = _notesRepository.Create(note._title, note._content, note._creator);
+                Logger.Log.Instance.Info($"Заметка {nt._id} создана");
+                return nt;
+            }
         }
 
         /// <summary>
@@ -131,11 +180,14 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <param name="userId">ID пользователя</param>
         [HttpPost]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}/share/{userId}")]
         public void Share(Guid id, Guid userId)
         {
             Logger.Log.Instance.Info($"Расшарить заметку {id} пользователю {userId}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NoFoundException($"Заметка {id} не найдена");
             _notesRepository.Share(id, userId);
+            Logger.Log.Instance.Info($"Заметка {id} расшарена пользователю {userId}");
         }
 
         /// <summary>
@@ -144,11 +196,14 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <param name="userId">ID пользователя</param>
         [HttpPost]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}/unshare/{userId}")]
         public void UnShare(Guid id, Guid userId)
         {
             Logger.Log.Instance.Info($"Убрать заметку {id} у пользователя {userId}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NoFoundException($"Заметка {id} не найдена");
             _notesRepository.UnShare(id, userId);
+            Logger.Log.Instance.Info($"Заметка {id} больше недоступна пользователю {userId}");
         }
 
         /// <summary>
@@ -157,11 +212,14 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <param name="categoryId">ID категории</param>
         [HttpPost]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}/addcategory/{categoryId}")]
         public void AddCategory(Guid id, Guid categoryId)
         {
             Logger.Log.Instance.Info($"Добавить заметку {id} в категорию {categoryId}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NoFoundException($"Заметка {id} не найдена");
             _notesRepository.AddToCategory(id, categoryId);
+            Logger.Log.Instance.Info($"Заметка {id} добавлена в категорию {categoryId}");
         }
 
         /// <summary>
@@ -170,11 +228,14 @@ namespace DigDesNote.API.Controllers
         /// <param name="id">ID заметки</param>
         /// <param name="categoryId">ID категории</param>
         [HttpPost]
+        [CustomExceptionAtribute]
         [Route("api/note/{id}/delcategory/{categoryId}")]
         public void DeleteCategory(Guid id, Guid categoryId)
         {
             Logger.Log.Instance.Info($"Убрать заметку {id} из категории {categoryId}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NoFoundException($"Заметка {id} не найдена");
             _notesRepository.RemoveFromCategory(id, categoryId);
+            Logger.Log.Instance.Info($"Заметку {id} удалена из категории {categoryId}");
         }
     }
 }

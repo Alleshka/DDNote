@@ -264,7 +264,7 @@ namespace DigDesNote.DataLayer.Sql
 
                     using (var reader = command.ExecuteReader())
                     {
-                        if (!reader.Read()) throw new Exception($"Заметка с id {noteId} не найдена");
+                        if (!reader.Read()) return null;
                         else
                         {
                             Note note = ReaderGetNote(reader);
@@ -282,6 +282,8 @@ namespace DigDesNote.DataLayer.Sql
         public Note GetFullNote(Guid noteId)
         {
             Note tmp = GetBasicNote(noteId);
+            if (tmp == null) return null;
+
             tmp._categories = _catRepository.GetNoteCategories(noteId);
             tmp._shares = GetShares(noteId);
             return tmp;

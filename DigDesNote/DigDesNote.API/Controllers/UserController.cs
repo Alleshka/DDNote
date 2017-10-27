@@ -1,22 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using DigDesNote.Model;
 using DigDesNote.DataLayer;
 using DigDesNote.DataLayer.Sql;
+using System.ComponentModel.DataAnnotations;
+using DigDesNote.API.Models;
 
 namespace DigDesNote.API.Controllers
 {
     /// <summary>
     /// Управление пользователями
     /// </summary>
+    [CustomExceptionAtribute]
     public class UserController : ApiController
     {
         private IUsersRepository _userRepository;
         private String _connectionString = @"Data Source=DESKTOP-H4JQP0V;Initial Catalog=NoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+        private List<ValidationResult> result;
+        private ValidationContext context;
+
         public UserController()
         {
             _userRepository = new UserRepository(_connectionString, new NoteRepository(_connectionString, new CategoryRepository(_connectionString)), new CategoryRepository(_connectionString));
@@ -29,10 +33,12 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/user/{id}")]
-        public User GetBasicInfo(Guid id)
+        public BasicUser GetBasicInfo(Guid id)
         {
-            Logger.Log.Instance.Info($"Получение основной информации о пользователе {id}");
-            return _userRepository.GetBasicUser(id);
+            Logger.Log.Instance.Info($"Попытка получения основной информации о пользователе {id}");
+            User user = _userRepository.GetBasicUser(id);
+            if (user == null) throw new NoFoundException($"Пользователь {id} не найден");
+            else return new BasicUser(user);
         }
 
         /// <summary>
@@ -42,10 +48,12 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/user/{id}/full")]
-        public User GetFullInfo(Guid id)
+        public FullUser GetFullInfo(Guid id)
         {
-            Logger.Log.Instance.Info($"Получение полной информации о пользователе {id}");
-            return _userRepository.GetFullUser(id);
+            Logger.Log.Instance.Info($"Попытка получения полной информации о пользователе {id}");
+            User user = _userRepository.GetFullUser(id);
+            if (user == null) throw new NoFoundException($"Пользователь {id} не найден");
+            else return new FullUser(user);
         }
 
         /// <summary>
@@ -58,7 +66,8 @@ namespace DigDesNote.API.Controllers
         public IEnumerable<Category> GetUserCategories(Guid id)
         {
             Logger.Log.Instance.Info($"Получение категорий пользователе {id}");
-            return _userRepository.GetFullUser(id)._categories;
+            if (_userRepository.GetBasicUser(id) == null) throw new NoFoundException($"Пользователь {id} не найден");
+            else return _userRepository.GetFullUser(id)._categories;
         }
 
         /// <summary>
@@ -71,6 +80,7 @@ namespace DigDesNote.API.Controllers
         public IEnumerable<Note> GetUserNotes(Guid id)
         {
             Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
+            if (_userRepository.GetBasicUser(id) == null) throw new NoFoundException($"Пользователь {id} не найден");
             return _userRepository.GetFullUser(id)._notes;
         }
 
@@ -81,10 +91,25 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("api/user")]
-        public User CreateUser([FromBody]User user)
+        public BasicUser CreateUser([FromBody]CreateUser user)
         {
-            Logger.Log.Instance.Info($"Cоздание пользователя c параметрами: login = {user._login}, email = {user._email};");
-            return _userRepository.Create(user);
+            Logger.Log.Instance.Info($"Попытка создания пользователя c параметрами: login = {user._login}, email = {user._email};");
+
+            context = new ValidationContext(user);
+            result = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(user, context, result))
+            {
+                String message = "Невозможно создать пользователя. Указаны не все параметры: ";
+                foreach (var error in result) message += Environment.NewLine + error.ErrorMessage;
+                throw new ModelNotValid(message);
+            }
+            else
+            {
+                User tmp =  _userRepository.Create(user._login, user._email, user._password);
+                Logger.Log.Instance.Info($"Пользователь {tmp._id} создан");
+                return new BasicUser(tmp);
+            }
         }
 
         /// <summary>
@@ -101,19 +126,19 @@ namespace DigDesNote.API.Controllers
         }
 
 
-        /// <summary>
-        /// Редактирование пользователя
-        /// </summary>
-        /// <param name="id">ID пользователя</param>
-        /// <param name="user">Новое содержимое</param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("api/user/{id}")]
-        public User UpdateUser(Guid id, [FromBody]User user)
-        {
-                Logger.Log.Instance.Info($"Внесение изменений в пользователя с id = {id}");
-                return _userRepository.Edit(id, user._email, user._pass);
-        }
+        ///// <summary>
+        ///// Редактирование пользователя
+        ///// </summary>
+        ///// <param name="id">ID пользователя</param>
+        ///// <param name="user">Новое содержимое</param>
+        ///// <returns></returns>
+        //[HttpPut]
+        //[Route("api/user/{id}")]
+        //public User UpdateUser(Guid id, [FromBody]User user)
+        //{
+        //        Logger.Log.Instance.Info($"Внесение изменений в пользователя с id = {id}");
+        //        return _userRepository.Edit(id, user._email, user._pass);
+        //}
 
         /// <summary>
         /// Редактирование пользователя
@@ -122,10 +147,25 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("api/user")]
-        public User UpdateUser([FromBody]User user)
+        public BasicUser UpdateUser([FromBody]EditUser user)
         {
-            Logger.Log.Instance.Info($"Внесение изменений в пользователя с id = {user._id}");
-            return _userRepository.Edit(user._id, user._email, user._pass);
+            Logger.Log.Instance.Info($"Попытка внесения изменений в пользователя с id = {user._id}");
+
+            context = new ValidationContext(user);
+            result = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(user, context, result))
+            {
+                String message = "Невозможно изменить пользователя. Указаны не все параметры: ";
+                foreach (var error in result) message += Environment.NewLine + error.ErrorMessage;
+                throw new ModelNotValid(message);
+            }
+            else
+            {
+                User tmp =  _userRepository.Edit(user._id, user._email, user._password);
+                Logger.Log.Instance.Info($"Пользователь {user._id} успешно изменён");
+                return new BasicUser(tmp);
+            }
         }
     }
 }

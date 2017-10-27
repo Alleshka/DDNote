@@ -16,34 +16,18 @@
             <param name="id">ID категории</param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.CategoryController.CreateCategory(DigDesNote.Model.Category)">
+        <member name="M:DigDesNote.API.Controllers.CategoryController.CreateCategory(DigDesNote.API.Models.CategoryCreate)">
             <summary>
             Создать категорию
             </summary>
             <param name="category"></param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.CategoryController.CreateCategory(System.String,System.Guid)">
-            <summary>
-            Создать категорию
-            </summary>
-            <param name="name">Имя категории</param>
-            <param name="id">ID пользователя</param>
-            <returns></returns>
-        </member>
-        <member name="M:DigDesNote.API.Controllers.CategoryController.UpdateCategory(DigDesNote.Model.Category)">
+        <member name="M:DigDesNote.API.Controllers.CategoryController.UpdateCategory(DigDesNote.API.Models.CategoryRename)">
             <summary>
             Обновить категорию
             </summary>
             <param name="category"></param>
-            <returns></returns>
-        </member>
-        <member name="M:DigDesNote.API.Controllers.CategoryController.UpdateCategory(System.Guid,System.String)">
-            <summary>
-            Обновить категорию
-            </summary>
-            <param name="id"></param>
-            <param name="newName"></param>
             <returns></returns>
         </member>
         <member name="M:DigDesNote.API.Controllers.CategoryController.DeleteCategory(System.Guid)">
@@ -86,22 +70,14 @@
             </summary>
             <param name="id"></param>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.UpdateNote(System.Guid,DigDesNote.Model.Note)">
-            <summary>
-            Обновить заметку
-            </summary>
-            <param name="id">ID заметки</param>
-            <param name="note">Структура заметки (может не содержать ID)</param>
-            <returns></returns>
-        </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.UpdateNote(DigDesNote.Model.Note)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.UpdateNote(DigDesNote.API.Models.UpdateNote)">
             <summary>
             Обновить заметку
             </summary>
             <param name="note">Стукрута заметки (Должна содержать ID)</param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.Create(DigDesNote.Model.Note)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.Create(DigDesNote.API.Models.CreateNote)">
             <summary>
             Создать заметку
             </summary>
@@ -169,7 +145,7 @@
             <param name="id">ID пользователя</param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.UserController.CreateUser(DigDesNote.Model.User)">
+        <member name="M:DigDesNote.API.Controllers.UserController.CreateUser(DigDesNote.API.Models.CreateUser)">
             <summary>
             Создание нового пользователя
             </summary>
@@ -182,13 +158,22 @@
             </summary>
             <param name="id"></param>
         </member>
-        <member name="M:DigDesNote.API.Controllers.UserController.UpdateUser(System.Guid,DigDesNote.Model.User)">
+        <member name="M:DigDesNote.API.Controllers.UserController.UpdateUser(DigDesNote.API.Models.EditUser)">
             <summary>
             Редактирование пользователя
             </summary>
-            <param name="id">ID пользователя</param>
-            <param name="user">Новое содержимое</param>
+            <param name="user">Содержимое для смены. Необходимо указание id</param>
             <returns></returns>
+        </member>
+        <member name="T:DigDesNote.API.Models.CategoryRename">
+            <summary>
+            В помощь для переименовывания категории
+            </summary>
+        </member>
+        <member name="T:DigDesNote.API.Models.CategoryCreate">
+            <summary>
+            В помощь для создания категорий
+            </summary>
         </member>
     </members>
 </doc>

@@ -104,9 +104,13 @@
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\NoteController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Exception.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Note.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +130,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DigDesNote.DataLayer.Sql\DigDesNote.DataLayer.Sql.csproj">
