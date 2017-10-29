@@ -37,7 +37,7 @@ namespace DigDesNote.API.Controllers
         {
             Logger.Log.Instance.Info($"Попытка получения основной информации о пользователе {id}");
             User user = _userRepository.GetBasicUser(id);
-            if (user == null) throw new NoFoundException($"Пользователь {id} не найден");
+            if (user == null) throw new NotFoundException($"Пользователь {id} не найден");
             else return new BasicUser(user);
         }
 
@@ -52,7 +52,7 @@ namespace DigDesNote.API.Controllers
         {
             Logger.Log.Instance.Info($"Попытка получения полной информации о пользователе {id}");
             User user = _userRepository.GetFullUser(id);
-            if (user == null) throw new NoFoundException($"Пользователь {id} не найден");
+            if (user == null) throw new NotFoundException($"Пользователь {id} не найден");
             else return new FullUser(user);
         }
 
@@ -66,7 +66,7 @@ namespace DigDesNote.API.Controllers
         public IEnumerable<Category> GetUserCategories(Guid id)
         {
             Logger.Log.Instance.Info($"Получение категорий пользователе {id}");
-            if (_userRepository.GetBasicUser(id) == null) throw new NoFoundException($"Пользователь {id} не найден");
+            if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
             else return _userRepository.GetFullUser(id)._categories;
         }
 
@@ -80,7 +80,7 @@ namespace DigDesNote.API.Controllers
         public IEnumerable<Note> GetUserNotes(Guid id)
         {
             Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
-            if (_userRepository.GetBasicUser(id) == null) throw new NoFoundException($"Пользователь {id} не найден");
+            if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
             return _userRepository.GetFullUser(id)._notes;
         }
 
@@ -150,7 +150,7 @@ namespace DigDesNote.API.Controllers
         public BasicUser UpdateUser([FromBody]EditUser user)
         {
             Logger.Log.Instance.Info($"Попытка внесения изменений в пользователя с id = {user._id}");
-            if (_userRepository.GetBasicUser(user._id) == null) throw new NoFoundException($"Пользователь {user._id} не найден");
+            if (_userRepository.GetBasicUser(user._id) == null) throw new NotFoundException($"Пользователь {user._id} не найден");
 
             context = new ValidationContext(user);
             result = new List<ValidationResult>();

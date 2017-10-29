@@ -5,9 +5,9 @@ using System.Web.Http;
 
 namespace DigDesNote.API
 {
-    public class NoFoundException : Exception
+    public class NotFoundException : Exception
     {
-        public NoFoundException(string message) : base(message)
+        public NotFoundException(string message) : base(message)
         {
 
         }
@@ -19,7 +19,6 @@ namespace DigDesNote.API
 
         }
     }
-
 
     public class CustomExceptionAtribute : ExceptionFilterAttribute
     {
@@ -45,7 +44,7 @@ namespace DigDesNote.API
                     responce = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
                     message = actionExecutedContext.Exception.Message;
                 }
-                if (actionExecutedContext.Exception.GetType() == typeof(NoFoundException))
+                if (actionExecutedContext.Exception.GetType() == typeof(NotFoundException))
                 {
                     responce = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
                     message = actionExecutedContext.Exception.Message;

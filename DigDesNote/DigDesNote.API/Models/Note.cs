@@ -48,4 +48,12 @@ namespace DigDesNote.API.Models
         [Required(ErrorMessage = "Необходимо указать содержимое (_content)")]
         public String _content { get; set; } // Содержимое заметки 
     }
+
+    public class ShareNote
+    {
+        [Required(ErrorMessage = "Укажите ID заметки (_noteId)")]
+        public Guid _noteId { get; set; }
+        [Required(ErrorMessage = "Укажите ID пользователя (_userId)")]
+        public Guid _userId { get; set; }
+    }
 }

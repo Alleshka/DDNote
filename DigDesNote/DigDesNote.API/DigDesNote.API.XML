@@ -84,14 +84,14 @@
             <param name="note"></param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.Share(System.Guid,System.Guid)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.Share(DigDesNote.API.Models.ShareNote)">
             <summary>
             Расшарить заметку
             </summary>
             <param name="id">ID заметки</param>
             <param name="userId">ID пользователя</param>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.UnShare(System.Guid,System.Guid)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.UnShare(DigDesNote.API.Models.ShareNote)">
             <summary>
             Убрать шару пользователю
             </summary>

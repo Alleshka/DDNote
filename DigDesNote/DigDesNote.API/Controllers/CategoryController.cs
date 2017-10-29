@@ -38,7 +38,7 @@ namespace DigDesNote.API.Controllers
             Logger.Log.Instance.Info($"Попытка получить информацию о категории {id}");
             Category category = _categoriesRepository.Get(id);
 
-            if (category == null) throw new NoFoundException($"Категория с id = {id} не найдена");
+            if (category == null) throw new NotFoundException($"Категория с id = {id} не найдена");
             else return category;
 
         }
@@ -100,7 +100,7 @@ namespace DigDesNote.API.Controllers
         {
             Logger.Log.Instance.Info($"Попытка переименовать категорию {category._id} в {category._name}");
 
-            if (_categoriesRepository.Get(category._id) == null) throw new NoFoundException($"Категория {category._id} не найдена");
+            if (_categoriesRepository.Get(category._id) == null) throw new NotFoundException($"Категория {category._id} не найдена");
 
             result = new List<ValidationResult>();
             context = new ValidationContext(category);
@@ -143,7 +143,7 @@ namespace DigDesNote.API.Controllers
         public void DeleteCategory(Guid id)
         {
             Logger.Log.Instance.Info($"Попытка удалить категорию {id}");
-            if (_categoriesRepository.Get(id) == null) throw new NoFoundException($"Категория {id} не найдена");
+            if (_categoriesRepository.Get(id) == null) throw new NotFoundException($"Категория {id} не найдена");
             _categoriesRepository.Delete(id);
             Logger.Log.Instance.Info($"Категория {id} была удалена");
         }
