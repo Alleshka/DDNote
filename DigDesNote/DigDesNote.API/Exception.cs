@@ -19,6 +19,13 @@ namespace DigDesNote.API
 
         }
     }
+    public class NoConnectionDB : Exception
+    {
+        public NoConnectionDB(String message) : base(message)
+        {
+
+        }
+    }
 
     public class CustomExceptionAtribute : ExceptionFilterAttribute
     {
@@ -29,29 +36,47 @@ namespace DigDesNote.API
                 HttpResponseMessage responce = null;
                 String message = "";
 
-                /// Дефолтные значения
-                responce = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
-                message = actionExecutedContext.Exception.Message;
-
-                /// В зависимости от ситуаций
-                if (actionExecutedContext.Exception.GetType() == typeof(System.Data.SqlClient.SqlException))
+                // В зависимости от ситуаций
+                if (actionExecutedContext.Exception is System.Data.SqlClient.SqlException)
                 {
+                    System.Data.SqlClient.SqlException ex = (System.Data.SqlClient.SqlException)actionExecutedContext.Exception;
                     responce = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
-                    message = "Ошибка при обращении к базе данных";
+
+                    if (ex.Number == 2)
+                    {
+                        message = "Отсутствует подключение к базе данных";                      
+                    }
+                    else
+                    {
+                        message = "Ошибка при обращении к базе данных";
+                    }
+                    Logger.Log.Instance.Error(message + Environment.NewLine + actionExecutedContext.Exception.ToString());
                 }
-                if (actionExecutedContext.Exception.GetType() == typeof(ModelNotValid))
+
+                if (actionExecutedContext.Exception is ModelNotValid)
                 {
                     responce = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
                     message = actionExecutedContext.Exception.Message;
+                    Logger.Log.Instance.Warn(actionExecutedContext.Exception.Message);
                 }
-                if (actionExecutedContext.Exception.GetType() == typeof(NotFoundException))
+
+                if (actionExecutedContext.Exception is NotFoundException)
                 {
                     responce = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
                     message = actionExecutedContext.Exception.Message;
+                    Logger.Log.Instance.Warn(actionExecutedContext.Exception.Message);
+                }
+
+                // Если необработанная ошибка
+                if (responce == null)
+                {
+                    // Дефолтные значения
+                    responce = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+                    message = actionExecutedContext.Exception.Message;
+                    Logger.Log.Instance.Error(actionExecutedContext.Exception.Message);
                 }
 
                 responce.Content = new StringContent(message);
-                Logger.Log.Instance.Error(actionExecutedContext.Exception.Message);
                 throw new HttpResponseException(responce);
             }
         }
