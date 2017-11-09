@@ -299,6 +299,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 *.txt
-*.txt
 DigDesNote/DigDesNote.API/Logs/errorlog.txt
+
 DigDesNote/DigDesNote.API/Logs/loglist.txt

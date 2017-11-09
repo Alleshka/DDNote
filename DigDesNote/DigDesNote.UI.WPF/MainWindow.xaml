@@ -1,0 +1,22 @@
+﻿<Window x:Class="DigDesNote.UI.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigDesNote.UI.WPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="300" FontWeight="Medium" Loaded="Window_Loaded">
+    <Grid>
+        <Grid Margin="0, 0, 0, 0" Width="285" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <TextBlock x:Name="_login" Margin="0, 0, 0, 0" Width="110" Height="20" HorizontalAlignment="Left">$login</TextBlock>
+            <Button x:Name="BtnCreateNote" Click="BtnCreateNote_Click" Margin="0, 0, 0, 0" Height="20" Width="110" HorizontalAlignment="Right">Добавить заметку</Button>
+        </Grid>
+
+        <WrapPanel Width="300" HorizontalAlignment="Left" Margin="0, 20, 0, 0">
+            <Expander Header="Доступные заметки" Expanded="Expander_Expanded">
+                <ListBox Width="150" Height="200" x:Name="PersListBox" Loaded="PersListBox_Loaded" MouseDoubleClick="PersListBox_MouseDoubleClick"></ListBox>
+            </Expander>
+        </WrapPanel>
+        
+    </Grid>
+</Window>

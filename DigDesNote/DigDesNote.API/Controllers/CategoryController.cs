@@ -5,7 +5,6 @@ using DigDesNote.Model;
 using DigDesNote.DataLayer;
 using DigDesNote.DataLayer.Sql;
 using System.ComponentModel.DataAnnotations;
-using DigDesNote.API.Models;
 
 namespace DigDesNote.API.Controllers
 {
@@ -32,6 +31,7 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [CustomExceptionAtribute]
+        [Authorize]
         [Route("api/category/{id}")]
         public Category GetCategoryInfo(Guid id)
         {
@@ -51,7 +51,7 @@ namespace DigDesNote.API.Controllers
         [HttpPost]
         [CustomExceptionAtribute]
         [Route("api/category")]
-        public Category CreateCategory([FromBody]CategoryCreate category)
+        public Category CreateCategory([FromBody]Category category)
         {
             Logger.Log.Instance.Info($"Попытка пользователя {category._userId} создать категорю {category._name}");
 
@@ -72,51 +72,22 @@ namespace DigDesNote.API.Controllers
             }
         }
 
-        ///// <summary>
-        ///// Создать категорию
-        ///// </summary>
-        ///// <param name="name">Имя категории</param>
-        ///// <param name="id">ID пользователя</param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //[Route("api/category/{name}/{id}")]
-        //public Category CreateCategory(String name, Guid id)
-        //{
-        //    Logger.Log.Instance.Info($"Попытка пользователя {id} создать категорю {name}");
-        //    Category cat = _categoriesRepository.Create(id, name);
-        //    Logger.Log.Instance.Info($"Категория {name} была создана пользователем {id} {Environment.NewLine} cat = {cat._id}");
-        //    return cat;
-        //}
-
         /// <summary>
         /// Обновить категорию
         /// </summary>
-        /// <param name="category"></param>
-        /// <returns></returns>
         [HttpPut]
         [CustomExceptionAtribute]
-        [Route("api/category")]
-        public Category UpdateCategory(CategoryRename category)
+        [Route("api/category/{id}")]
+        public Category UpdateCategory(Guid id, [FromBody]String name)
         {
-            Logger.Log.Instance.Info($"Попытка переименовать категорию {category._id} в {category._name}");
+            Logger.Log.Instance.Info($"Попытка переименовать категорию {id} в {name}");
 
-            if (_categoriesRepository.Get(category._id) == null) throw new NotFoundException($"Категория {category._id} не найдена");
+            if (_categoriesRepository.Get(id) == null) throw new NotFoundException($"Категория {id} не найдена");
 
-            result = new List<ValidationResult>();
-            context = new ValidationContext(category);
+            Category cat = _categoriesRepository.Edit(id, name);
+            Logger.Log.Instance.Info($"Категория {id} была переименована в {name}");
+            return cat;
 
-            if (!Validator.TryValidateObject(category, context, result, true))
-            {
-                String message = "Не удалось переименовать категорию. Указаны не все данные: ";
-                foreach (var error in result) message += Environment.NewLine + error.ErrorMessage;
-                throw new ModelNotValid(message);
-            }
-            else
-            {
-                Category cat = _categoriesRepository.Edit(category._id, category._name);
-                Logger.Log.Instance.Info($"Категория {cat._id} была переименована в {cat._name}");
-                return cat;
-            }
         }
 
         ///// <summary>

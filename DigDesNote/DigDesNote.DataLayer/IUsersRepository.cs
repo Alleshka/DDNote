@@ -12,8 +12,10 @@ namespace DigDesNote.DataLayer
 
         User GetBasicUser(Guid id); // Получить основную информацию о пользователе (имя, логин, почту)
         User GetFullUser(Guid id); // Получить всю информацию о пользователе (+ все заметки, + все категории)
+        User FindByLogin(String login); // Найти пользователя по логину
 
         User Edit(Guid id, String newMail, String newPass); // Внести изменения в пользователя
         User Edit(User user);
+
     }
 }

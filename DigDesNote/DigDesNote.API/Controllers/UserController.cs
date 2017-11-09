@@ -5,7 +5,7 @@ using DigDesNote.Model;
 using DigDesNote.DataLayer;
 using DigDesNote.DataLayer.Sql;
 using System.ComponentModel.DataAnnotations;
-using DigDesNote.API.Models;
+using DigDesNote.API.Filter;
 
 namespace DigDesNote.API.Controllers
 {
@@ -33,12 +33,22 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/user/{id}")]
-        public BasicUser GetBasicInfo(Guid id)
+        public User GetBasicInfo(Guid id)
         {
             Logger.Log.Instance.Info($"Попытка получения основной информации о пользователе {id}");
             User user = _userRepository.GetBasicUser(id);
             if (user == null) throw new NotFoundException($"Пользователь {id} не найден");
-            else return new BasicUser(user);
+            else return user;
+        }
+
+        [HttpGet]
+        [Route("api/user/login/{login}")]
+        public User GetBasicInfo(String login)
+        {
+            Logger.Log.Instance.Info($"Попытка получения основной информации о пользователе {login}");
+            User user = _userRepository.FindByLogin(login);
+            if (user == null) throw new NotFoundException($"Пользователь {login} не найден");
+            else return user;
         }
 
         /// <summary>
@@ -48,12 +58,12 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/user/{id}/full")]
-        public FullUser GetFullInfo(Guid id)
+        public User GetFullInfo(Guid id)
         {
             Logger.Log.Instance.Info($"Попытка получения полной информации о пользователе {id}");
             User user = _userRepository.GetFullUser(id);
             if (user == null) throw new NotFoundException($"Пользователь {id} не найден");
-            else return new FullUser(user);
+            else return user;
         }
 
         /// <summary>
@@ -91,24 +101,26 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("api/user")]
-        public BasicUser CreateUser([FromBody]CreateUser user)
+        public User CreateUser([FromBody]User user)
         {
             Logger.Log.Instance.Info($"Попытка создания пользователя c параметрами: login = {user._login}, email = {user._email};");
 
-            context = new ValidationContext(user);
-            result = new List<ValidationResult>();
-
-            if (!Validator.TryValidateObject(user, context, result))
+            if (!ModelState.IsValid)
             {
-                String message = "Невозможно создать пользователя. Указаны не все параметры: ";
-                foreach (var error in result) message += Environment.NewLine + error.ErrorMessage;
+                String message = "Невозможно создать пользователя: ";
+
+                foreach (var values in ModelState.Values)
+                {
+                    foreach (var error in values.Errors) message += Environment.NewLine + error.ErrorMessage;
+                }
+
                 throw new ModelNotValid(message);
             }
             else
             {
-                User tmp =  _userRepository.Create(user._login, user._email, user._password);
+                User tmp = _userRepository.Create(user._login, user._email, user._pass);
                 Logger.Log.Instance.Info($"Пользователь {tmp._id} создан");
-                return new BasicUser(tmp);
+                return tmp;
             }
         }
 
@@ -146,11 +158,11 @@ namespace DigDesNote.API.Controllers
         /// <param name="user">Содержимое для смены. Необходимо указание id</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("api/user")]
-        public BasicUser UpdateUser([FromBody]EditUser user)
+        [Route("api/user/{id}")]
+        public User UpdateUser(Guid id, [FromBody]User user)
         {
-            Logger.Log.Instance.Info($"Попытка внесения изменений в пользователя с id = {user._id}");
-            if (_userRepository.GetBasicUser(user._id) == null) throw new NotFoundException($"Пользователь {user._id} не найден");
+            Logger.Log.Instance.Info($"Попытка внесения изменений в пользователя с id = {id}");
+            if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
 
             context = new ValidationContext(user);
             result = new List<ValidationResult>();
@@ -164,10 +176,21 @@ namespace DigDesNote.API.Controllers
             }
             else
             {
-                User tmp =  _userRepository.Edit(user._id, user._email, user._password);
-                Logger.Log.Instance.Info($"Пользователь {user._id} успешно изменён");
-                return new BasicUser(tmp);
+                User tmp =  _userRepository.Edit(id, user._email, user._pass);
+                Logger.Log.Instance.Info($"Пользователь {id} успешно изменён");
+                return tmp;
             }
+        }
+
+        [HttpPost]
+        [Route("api/user/login")]
+        public Guid Login([FromBody]User user)
+        {
+            User findUser = _userRepository.FindByLogin(user._login);
+            if (findUser == null) throw new NotFoundException("Пользователь не найден");
+
+            if (findUser._pass == user._pass) return findUser._id;
+            else throw new Exception("Пароль указан неверно");
         }
     }
 }

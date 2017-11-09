@@ -8,8 +8,12 @@ namespace DigDesNote.Model
     {
         public Guid _id { get; set; } // ID заметки 
 
+        [Required(ErrorMessage = "Укажите название заметки ")]
         public String _title { get; set; } // Заголовок заметки
+
+        [Required(ErrorMessage = "Укажите содержимое заметки")]
         public String _content { get; set; } // Содержимое заметки 
+
         public Guid _creator { get; set; } // Создатель заметки 
 
         public DateTime _created { get; set; } // Дата создания 

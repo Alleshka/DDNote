@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="DigDesNote.UI.WPF.NoteControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DigDesNote.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="105" d:DesignWidth="235">
+    <Grid>
+        <StackPanel Width="225" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Grid>
+                <TextBlock HorizontalAlignment="Left">Заголовок:</TextBlock>
+                <TextBox x:Name="_title" Margin="75,0,-0.2,-0.4" Height="18" VerticalAlignment="Top"/>
+            </Grid>
+            <Grid>
+                <TextBlock Margin="0,0,0,0.2" HorizontalAlignment="Left" Width="74">Содержимое:</TextBlock>
+                <TextBox x:Name="_content" HorizontalAlignment="Left" Width="150" Height="75" Margin="75,0,-0.2,0" AcceptsReturn="True" VerticalAlignment="Top"></TextBox>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

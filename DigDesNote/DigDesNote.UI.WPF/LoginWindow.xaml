@@ -1,0 +1,24 @@
+﻿<Window x:Class="DigDesNote.UI.WPF.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigDesNote.UI.WPF"
+        mc:Ignorable="d"
+        Title="LoginWindow" Height="147.703" Width="200" ResizeMode="NoResize">
+    <Grid>
+        <WrapPanel Margin="0, 10, 0, 0" Height="25" VerticalAlignment="Top">
+            <TextBlock HorizontalAlignment="Left" Width="55">Логин: </TextBlock>
+            <TextBox x:Name="_login" HorizontalAlignment="Center" Width="110">Alleshka</TextBox>
+        </WrapPanel>
+        <WrapPanel Margin="0, 45, 0, 0" Height="40" VerticalAlignment="Top">
+            <TextBlock HorizontalAlignment="Left" Width="55">Пароль:</TextBlock>
+            <PasswordBox x:Name="_password" HorizontalAlignment="Center" Width="110"></PasswordBox>
+            <CheckBox x:Name="_storeLogin">Запомнить</CheckBox>
+        </WrapPanel>
+        <Grid Margin="0, 75, 0, 0" Height="25" Width="155">
+            <Button Width="75" HorizontalAlignment="Left" x:Name="BtnLogin" Click="BtnLogin_Click">Вход</Button>
+            <Button Width="75" HorizontalAlignment="Right" x:Name="BtnRegister" Click="BtnRegister_Click">Регистрация</Button>
+        </Grid>
+    </Grid>
+</Window>

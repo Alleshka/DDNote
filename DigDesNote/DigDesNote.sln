@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.Model", "DigDesNote.Model\DigDesNote.Model.csproj", "{0B2D24B1-B006-4847-97F9-65FD519A13A3}"
 EndProject
@@ -17,6 +17,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.API", "DigDesNote.API\DigDesNote.API.csproj", "{FBF25BB6-06F1-4A3B-B9FF-E7C986AC56B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.Logger", "DigDesNote\DigDesNote.Logger.csproj", "{7D76CDA7-5D53-4CF1-AF36-4AE7697730AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.UI.WPF", "DigDesNote.UI.WPF\DigDesNote.UI.WPF.csproj", "{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{7D76CDA7-5D53-4CF1-AF36-4AE7697730AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D76CDA7-5D53-4CF1-AF36-4AE7697730AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D76CDA7-5D53-4CF1-AF36-4AE7697730AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

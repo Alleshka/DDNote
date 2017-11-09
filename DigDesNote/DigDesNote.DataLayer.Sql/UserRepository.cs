@@ -33,7 +33,7 @@ namespace DigDesNote.DataLayer.Sql
                     _id = Guid.NewGuid(),
                     _login = login,
                     _email = email,
-                    _pass = password.GetHashCode().ToString()
+                    _pass = password
                 };
 
                 _sqlConnection.Open();
@@ -113,7 +113,7 @@ namespace DigDesNote.DataLayer.Sql
             User tmp = GetBasicUser(id);
             if (tmp == null) return null;
             tmp._categories = _categoryRepository.GetUserCategories(id);
-            tmp._notes = _noteRepository.GetAllUserNotes(id);
+            tmp._notes = _noteRepository.GetAllUserNotes(id); 
             return tmp;
         }
 
@@ -146,6 +146,33 @@ namespace DigDesNote.DataLayer.Sql
             return Edit(user._id, user._email, user._pass);
         }
 
+        public User FindByLogin(string login)
+        {
+            using (var _sqlConnect = new SqlConnection(_connectionString))
+            {
+                _sqlConnect.Open();
+                using (var _command = _sqlConnect.CreateCommand())
+                {
+                    _command.CommandText = $"select * from TUser where login=@login";
+                    _command.Parameters.AddWithValue("@login", login);
 
+                    using (var reader = _command.ExecuteReader())
+                    {
+                        if (!reader.Read()) return null;
+                        else
+                        {
+                            User us = new User()
+                            {
+                                _id = reader.GetGuid(reader.GetOrdinal("id")),
+                                _login = reader.GetString(reader.GetOrdinal("login")),
+                                _email = reader.GetString(reader.GetOrdinal("email")),
+                                _pass = reader.GetString(reader.GetOrdinal("password"))                             
+                            };
+                            return us;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -16,19 +16,17 @@
             <param name="id">ID категории</param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.CategoryController.CreateCategory(DigDesNote.API.Models.CategoryCreate)">
+        <member name="M:DigDesNote.API.Controllers.CategoryController.CreateCategory(DigDesNote.Model.Category)">
             <summary>
             Создать категорию
             </summary>
             <param name="category"></param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.CategoryController.UpdateCategory(DigDesNote.API.Models.CategoryRename)">
+        <member name="M:DigDesNote.API.Controllers.CategoryController.UpdateCategory(System.Guid,System.String)">
             <summary>
             Обновить категорию
             </summary>
-            <param name="category"></param>
-            <returns></returns>
         </member>
         <member name="M:DigDesNote.API.Controllers.CategoryController.DeleteCategory(System.Guid)">
             <summary>
@@ -70,28 +68,28 @@
             </summary>
             <param name="id"></param>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.UpdateNote(DigDesNote.API.Models.UpdateNote)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.UpdateNote(DigDesNote.Model.Note)">
             <summary>
             Обновить заметку
             </summary>
             <param name="note">Стукрута заметки (Должна содержать ID)</param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.Create(DigDesNote.API.Models.CreateNote)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.Create(DigDesNote.Model.Note)">
             <summary>
             Создать заметку
             </summary>
             <param name="note"></param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.Share(DigDesNote.API.Models.ShareNote)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.Share(System.Guid,System.Guid)">
             <summary>
             Расшарить заметку
             </summary>
             <param name="id">ID заметки</param>
-            <param name="userId">ID пользователя</param>
+            <param name="userid">ID пользователя</param>
         </member>
-        <member name="M:DigDesNote.API.Controllers.NoteController.UnShare(DigDesNote.API.Models.ShareNote)">
+        <member name="M:DigDesNote.API.Controllers.NoteController.UnShare(System.Guid,System.Guid)">
             <summary>
             Убрать шару пользователю
             </summary>
@@ -145,7 +143,7 @@
             <param name="id">ID пользователя</param>
             <returns></returns>
         </member>
-        <member name="M:DigDesNote.API.Controllers.UserController.CreateUser(DigDesNote.API.Models.CreateUser)">
+        <member name="M:DigDesNote.API.Controllers.UserController.CreateUser(DigDesNote.Model.User)">
             <summary>
             Создание нового пользователя
             </summary>
@@ -158,22 +156,12 @@
             </summary>
             <param name="id"></param>
         </member>
-        <member name="M:DigDesNote.API.Controllers.UserController.UpdateUser(DigDesNote.API.Models.EditUser)">
+        <member name="M:DigDesNote.API.Controllers.UserController.UpdateUser(System.Guid,DigDesNote.Model.User)">
             <summary>
             Редактирование пользователя
             </summary>
             <param name="user">Содержимое для смены. Необходимо указание id</param>
             <returns></returns>
-        </member>
-        <member name="T:DigDesNote.API.Models.CategoryRename">
-            <summary>
-            В помощь для переименовывания категории
-            </summary>
-        </member>
-        <member name="T:DigDesNote.API.Models.CategoryCreate">
-            <summary>
-            В помощь для создания категорий
-            </summary>
         </member>
     </members>
 </doc>

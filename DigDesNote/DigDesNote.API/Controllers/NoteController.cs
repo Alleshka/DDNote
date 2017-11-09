@@ -5,7 +5,6 @@ using DigDesNote.Model;
 using DigDesNote.DataLayer;
 using DigDesNote.DataLayer.Sql;
 using System.ComponentModel.DataAnnotations;
-using DigDesNote.API.Models;
 
 namespace DigDesNote.API.Controllers
 {
@@ -30,13 +29,13 @@ namespace DigDesNote.API.Controllers
         [HttpGet]
         [CustomExceptionAtribute]
         [Route("api/note/{id}")]
-        public BasicNote GetBasicInfo(Guid id)
+        public Note GetBasicInfo(Guid id)
         {
             Logger.Log.Instance.Info($"Попытка получения основной информации о заметке {id}");
 
             Note note = _notesRepository.GetBasicNote(id);
             if (note == null) throw new NotFoundException($"Заметка с id = {id} не найдена");
-            else return new BasicNote(note);
+            else return note;
         }
 
         /// <summary>
@@ -123,7 +122,7 @@ namespace DigDesNote.API.Controllers
         [HttpPut]
         [CustomExceptionAtribute]
         [Route("api/note")]
-        public BasicNote UpdateNote([FromBody]UpdateNote note)
+        public Note UpdateNote([FromBody]Note note)
         {
             Logger.Log.Instance.Info($"Попытка внесения изменений в заметку {note._id}: title = {note._title}, content = {note._content}");
             if (_notesRepository.GetBasicNote(note._id) == null) throw new NotFoundException($"Заметка {note._id} не найдена");
@@ -141,7 +140,7 @@ namespace DigDesNote.API.Controllers
             {
                 Note nt = _notesRepository.Edit(note._id, note._title, note._content);
                 Logger.Log.Instance.Info($"Заметка {note._id} была изменена");
-                return new BasicNote(nt);
+                return nt;
             }
         }
 
@@ -153,7 +152,7 @@ namespace DigDesNote.API.Controllers
         [HttpPost]
         [CustomExceptionAtribute]
         [Route("api/note")]
-        public Note Create([FromBody]CreateNote note)
+        public Note Create([FromBody]Note note)
         {
             Logger.Log.Instance.Info($"Попытка создания заметки с параметрами: title = {note._title}, content = {note._content}, creator = {note._creator}");
 
@@ -178,16 +177,16 @@ namespace DigDesNote.API.Controllers
         /// Расшарить заметку
         /// </summary>
         /// <param name="id">ID заметки</param>
-        /// <param name="userId">ID пользователя</param>
+        /// <param name="userid">ID пользователя</param>
         [HttpPost]
         [CustomExceptionAtribute]
-        [Route("api/note/share")]
-        public void Share(ShareNote note)
+        [Route("api/note/{id}/share/{userid}")]
+        public void Share(Guid id, Guid userid)
         {
-            Logger.Log.Instance.Info($"Расшарить заметку {note._noteId} пользователю {note._userId}");
-            if (_notesRepository.GetBasicNote(note._noteId) == null) throw new NotFoundException($"Заметка {note._noteId} не найдена");
-            _notesRepository.Share(note._noteId, note._userId);
-            Logger.Log.Instance.Info($"Заметка {note._noteId} расшарена пользователю {note._userId}");
+            Logger.Log.Instance.Info($"Расшарить заметку {id} пользователю {userid}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NotFoundException($"Заметка {id} не найдена");
+            _notesRepository.Share(id, userid);
+            Logger.Log.Instance.Info($"Заметка {id} расшарена пользователю {userid}");
         }
 
         /// <summary>
@@ -197,13 +196,13 @@ namespace DigDesNote.API.Controllers
         /// <param name="userId">ID пользователя</param>
         [HttpPost]
         [CustomExceptionAtribute]
-        [Route("api/note/unshare")]
-        public void UnShare(ShareNote note)
+        [Route("api/note/{id}/unshare/{userid}")]
+        public void UnShare(Guid id, Guid userid)
         {
-            Logger.Log.Instance.Info($"Убрать заметку {note._noteId} у пользователя {note._userId}");
-            if (_notesRepository.GetBasicNote(note._noteId) == null) throw new NotFoundException($"Заметка {note._noteId} не найдена");
-            _notesRepository.UnShare(note._noteId, note._userId);
-            Logger.Log.Instance.Info($"Заметка {note._noteId} больше недоступна пользователю {note._userId}");
+            Logger.Log.Instance.Info($"Убрать заметку {id} у пользователя {userid}");
+            if (_notesRepository.GetBasicNote(id) == null) throw new NotFoundException($"Заметка {id} не найдена");
+            _notesRepository.UnShare(id, userid);
+            Logger.Log.Instance.Info($"Заметка {id} больше недоступна пользователю {userid}");
         }
 
         /// <summary>
