@@ -5,9 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="AddCategoryWindow" Height="300" Width="300" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="AddCategoryWindow" Height="200" Width="210" Loaded="Window_Loaded" Closing="Window_Closing" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+
     <Grid>
-        <ListBox MouseDoubleClick="AllCategory_MouseDoubleClick" Margin="0, 15, 0, 0" x:Name="AllCategory" Width="120" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top"></ListBox>
-        <ListBox MouseDoubleClick="AddedCategory_MouseDoubleClick" Margin="0, 15, 0, 0" x:Name="AddedCategory" Width="120" Height="150" HorizontalAlignment="Right" VerticalAlignment="Top"></ListBox>
+        <ListBox x:Name="AllCategory" Margin="5, 0, 0, 0" Width="90" Height="170" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="AddCategoryItem" Header="Добавить категорию" Click="AddCategoryItem_Click"></MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+        <ListBox x:Name="AddedCategory" Margin="100,0,0,0.4" Width="90" HorizontalAlignment="Left">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="DelCategoryItem" Header="Удалить категорию" Click="DelCategoryItem_Click"></MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
     </Grid>
 </Window>

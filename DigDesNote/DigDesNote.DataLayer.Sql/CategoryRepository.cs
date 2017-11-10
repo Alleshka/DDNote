@@ -27,7 +27,8 @@ namespace DigDesNote.DataLayer.Sql
                 Category _cat = new Category()
                 {
                     _id = Guid.NewGuid(),
-                    _name = name
+                    _name = name,
+                    _userId = userId
                 };
                 _sqlConnect.Open();
 

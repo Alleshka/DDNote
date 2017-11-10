@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="CreateNoteWindow" Height="300" Width="300">
+        Title="CreateNoteWindow" Height="320" Width="330">
     <Grid>
-        <local:NoteControl x:Name="_noteControl" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0, 15, 0, 0" Width="235"></local:NoteControl>
-        <Button Margin="0, 75, 0, 0" Height="25" Click="Button_Click">Создать заметку</Button>
+        <local:NoteControl Margin="0, 10, 0, 0" x:Name="_noteControl"></local:NoteControl>
+        <Button Margin="0, 250, 0, 0" Height="25" Click="Button_Click">Создать заметку</Button>
     </Grid>
 </Window>

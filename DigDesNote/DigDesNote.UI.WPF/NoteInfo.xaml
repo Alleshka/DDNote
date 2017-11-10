@@ -5,28 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="NoteInfo" Height="400" Width="250" Loaded="Window_Loaded">
+        Title="NoteInfo" Height="500" Width="324.4" Loaded="Window_Loaded" Closing="Window_Closing">
     <StackPanel>
-        <local:NoteControl x:Name="_noteConrol" Margin="0,10,0,0" HorizontalAlignment="Left" Width="245"></local:NoteControl>
-        <Grid>
-            <TextBlock>Категории:</TextBlock>
-            <ListView Margin="75, 0, 0, 0" MouseDoubleClick="_categoryList_MouseDoubleClick" x:Name="_categoryList" Height="45" HorizontalAlignment="Left" Width="150"></ListView>
-        </Grid>
-        <Grid>
-            <TextBlock>Доступно: </TextBlock>
-            <ListView MouseDoubleClick="_shareList_MouseDoubleClick" Margin="75, 0, 0, 0" x:Name="_shareList" Height="45" HorizontalAlignment="Left" Width="150"></ListView>
-        </Grid>
+        <local:NoteControl x:Name="_noteConrol" Margin="0,10,0,0" HorizontalAlignment="Left" Width="312" Height="250"></local:NoteControl>
         <Grid>
             <TextBlock>Создано:</TextBlock>
-            <TextBlock Margin="75, 0, 0, 0" x:Name="_createTime"></TextBlock>
+            <TextBlock Margin="70,0,10.4,0" x:Name="_createTime"></TextBlock>
         </Grid>
         <Grid>
             <TextBlock>Обновлено:</TextBlock>
-            <TextBlock Margin="75, 0, 0, 0" x:Name="_updateTime"></TextBlock>
+            <TextBlock Margin="70,0,10.4,0" x:Name="_updateTime"></TextBlock>
         </Grid>
-        <Grid Width="125" Margin="0, 20, 0, 0">
-            <Button HorizontalAlignment="Left" x:Name="BtnSave" Click="BtnSave_Click">Сохранить</Button>
-            <Button HorizontalAlignment="Right" x:Name="BtnClode" Click="BtnClode_Click">Закрыть</Button>
+        
+        <Grid Width="160">
+            <Button HorizontalAlignment="Left" Width="75" x:Name="BtnSave" Click="BtnSave_Click" Content="Сохранить"/>
+            <Button HorizontalAlignment="Right" Width="75" x:Name="BtnClode" Click="BtnClode_Click" Content="Закрыть"/>
         </Grid>
+        <Expander x:Name="ShareExpand" Header="Доступно пользователям" Expanded="ShareExpand_Expanded" HorizontalAlignment="Left" Width="308">
+            <ListView MouseDoubleClick="_shareList_MouseDoubleClick" x:Name="_shareList" Height="45" HorizontalAlignment="Left" Width="308" Margin="0,0,-2.4,0"></ListView>
+        </Expander>
+        <Expander x:Name="_categoryExpand" Header="Категории" Expanded="_categoryExpand_Expanded" HorizontalAlignment="Left" Width="308">
+            <ListView MouseDoubleClick="_categoryList_MouseDoubleClick" x:Name="_categoryList" Height="45"/>
+        </Expander>
     </StackPanel>
 </Window>

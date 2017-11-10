@@ -21,23 +21,23 @@ namespace DigDesNote.UI.WPF
     public partial class AddCategoryWindow : Window
     {
         private readonly ServiceClient _client;
-        private readonly Guid _userID;
-        private readonly Guid _noteID;
+
+        private readonly Guid _userID; // Текущий ID
+        private readonly Guid _noteID; // Текущая заметка
 
         private List<Category> _allcategory;
         private List<Category> _curCategory;
 
-        bool redact;
+        bool redact; // Флаг указывающий на редактирование
 
         public AddCategoryWindow(ServiceClient client, Guid user, Guid note)
         {
             InitializeComponent();
+
             _client = client;
+
             _userID = user;
             _noteID = note;
-
-            _curCategory = _client.GetNoteCategories(_noteID).OrderBy(x => x._id).ToList(); // Считываем категории из заметки
-            _allcategory = _client.GetAllCategories(_userID).OrderBy(x => x._id).ToList(); // Считываем все категории
 
             redact = false;
         }
@@ -48,48 +48,35 @@ namespace DigDesNote.UI.WPF
             redact = false;
         }
 
-        private void RefreshCategories()
-        {
-            _curCategory = _client.GetNoteCategories(_noteID).OrderBy(x => x._id).ToList(); // Считываем категории из заметки
-            _allcategory = _client.GetAllCategories(_userID).OrderBy(x => x._id).ToList(); // Считываем все категории
-
-            AddedCategory.ItemsSource = from cat in _curCategory select cat._name;
-            AllCategory.ItemsSource = from cat in _allcategory select cat._name;
-            redact = true;
-        }
-
-        /// <summary>
-        /// Добавить категорию к заметке
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AllCategory_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (_allcategory.Count != 0)
-            {
-                Guid id = _allcategory[AllCategory.SelectedIndex]._id; // Достаём ID категории 
-                _client.AddCategory(id, _noteID); // Добавляем заметку в категорию 
-
-                _curCategory.Add(_allcategory[AllCategory.SelectedIndex]); // Добавляем в окно вывода
-                RefreshCategories();
-            }
-        }
-
-        private void AddedCategory_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (_curCategory.Count != 0)
-            {
-                Guid id = _curCategory[AddedCategory.SelectedIndex]._id; // Достаём ID категории 
-                _client.DelCategory(id, _noteID); // Добавляем заметку в категорию 
-
-                _curCategory.RemoveAt(AddedCategory.SelectedIndex); // Удаляем из окна вывода
-                RefreshCategories();
-            }
-        }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.DialogResult = redact;
+        }
+
+        public void RefreshCategories()
+        {
+            // Считываем категории пользователя 
+            _allcategory = _client.GetAllCategories(_userID).OrderBy(x => x._id).ToList();
+            _curCategory = _client.GetNoteCategories(_noteID).OrderBy(x => x._id).ToList();
+
+            AddedCategory.ItemsSource = from cat in _curCategory select cat._name;
+            AllCategory.ItemsSource = from cat in _allcategory select cat._name;
+
+            redact = true;
+        }
+
+        // Добавить категорию
+        private void AddCategoryItem_Click(object sender, RoutedEventArgs e)
+        {
+            _client.AddNoteToCategory(_noteID, _allcategory[AllCategory.SelectedIndex]._id);
+            RefreshCategories();
+        }
+
+        // Удалить категорию
+        private void DelCategoryItem_Click(object sender, RoutedEventArgs e)
+        {
+            _client.DelNoteFromCategory(_noteID, _curCategory[AddedCategory.SelectedIndex]._id);
+            RefreshCategories();
         }
     }
 }

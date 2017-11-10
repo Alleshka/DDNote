@@ -117,6 +117,7 @@ namespace DigDesNote.DataLayer.Sql
             return tmp;
         }
 
+        
         /// <summary>
         /// Внесение изменения в пользователя 
         /// </summary>

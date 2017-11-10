@@ -20,11 +20,12 @@ namespace DigDesNote.UI.WPF
     /// </summary>
     public partial class AddShareList : Window
     {
-
         private List<User> _userList;
 
         private ServiceClient _client;
         private Guid _noteId;
+
+        bool redact;
 
         public AddShareList(ServiceClient client, Guid noteId)
         {
@@ -34,29 +35,39 @@ namespace DigDesNote.UI.WPF
             _noteId = noteId;
 
             RefreshList();
+
+            redact = false;
         }
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            _client.ShareNote(_login.Text, _noteId);
+            _client.ShareNoteToUser(_login.Text, _noteId);
             RefreshList();
         }
 
         private void RefreshList()
         {
-            _userList = (from us in _client.GetShares(_noteId) select _client.GetBasicUserInfo(us)).ToList();
-            _shareList.ItemsSource = from k in _userList select k._login;
+            _shareList.ItemsSource = null;
+            _userList = (from us in _client.GetShares(_noteId) select _client.GetBasicUserInfo(us)).OrderBy(x => x._id).ToList(); // Получаем список юзеров 
+            _shareList.ItemsSource = (from us in _userList select us._login);
+
+            redact = true;
         }
 
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _client.UnShareNote(_userList[_shareList.SelectedIndex]._id, _noteId);
+            _client.UnShareNoteToUser(_userList[_shareList.SelectedIndex]._id, _noteId); // Убираем шару
             RefreshList();
         }
 
         private void UpdateMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            RefreshList();
+        }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.DialogResult = redact;
         }
     }
 }

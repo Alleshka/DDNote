@@ -35,6 +35,9 @@ namespace DigDesNote.UI.WPF
             get => _content.Text;
             set => _content.Text = value;
         }
-                
+
+        private void _content_KeyUp(object sender, KeyEventArgs e)
+        {
+        }
     }
 }

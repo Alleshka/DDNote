@@ -16,6 +16,8 @@ namespace DigDesNote.DataLayer
         IEnumerable<Note> GetAllUserNotes(Guid userID); // Получить все заметки пользователя
         IEnumerable<Guid> GetShares(Guid noteId); // Получает список пользователей, которым расшарена заметка
 
+        IEnumerable<Note> GetNoteFromCategory(Guid categoryId); // Получить заметки из категории
+
         Note GetBasicNote(Guid noteId); // Получение основной информации (заголовок, содержимое, id создателя)
         Note GetFullNote(Guid noteId); // Получение всей информации (основная + список категорий + шар)
 

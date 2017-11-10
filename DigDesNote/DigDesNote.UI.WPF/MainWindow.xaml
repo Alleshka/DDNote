@@ -5,18 +5,77 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="300" FontWeight="Medium" Loaded="Window_Loaded">
+        Title="MainWindow" Height="370" Width="430" FontWeight="Medium" Loaded="Window_Loaded" Closing="Window_Closing" ResizeMode="NoResize">
     <Grid>
-        <Grid Margin="0, 0, 0, 0" Width="285" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <TextBlock x:Name="_login" Margin="0, 0, 0, 0" Width="110" Height="20" HorizontalAlignment="Left">$login</TextBlock>
-            <Button x:Name="BtnCreateNote" Click="BtnCreateNote_Click" Margin="0, 0, 0, 0" Height="20" Width="110" HorizontalAlignment="Right">Добавить заметку</Button>
-        </Grid>
-
-        <WrapPanel Width="300" HorizontalAlignment="Left" Margin="0, 20, 0, 0">
-            <Expander Header="Доступные заметки" Expanded="Expander_Expanded">
-                <ListBox Width="150" Height="200" x:Name="PersListBox" Loaded="PersListBox_Loaded" MouseDoubleClick="PersListBox_MouseDoubleClick"></ListBox>
-            </Expander>
-        </WrapPanel>
+        <!-- Область меню - Старт -->
+        <Menu Height="20" VerticalAlignment="Top">
+            <MenuItem Header="Программа">
+                <MenuItem x:Name="Synchronize" Header="Синхронизация" Click="Synchronize_Click"/>
+                <MenuItem x:Name="ClodeProgram" Header="Выход из УЗ" Click="ClodeProgram_Click"/>
+            </MenuItem>
+        </Menu>
+        <!-- Область меню - Конец -->
         
+        <!--Область логина - старт-->
+        <Grid Margin="5, 20, 0, 0">
+            <TextBlock x:Name="_login">$login</TextBlock>
+        </Grid>
+        <!--Область логина - Конец-->
+        
+        <!--Рабочая область - старт-->
+        <Grid Margin="5, 40, 0, 0" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <!--Область заметок-->
+            <Grid Margin="0, 0, 0, 0" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <WrapPanel VerticalAlignment="Top">
+                    <!--Область личных заметок - старт -->
+                    <Expander x:Name="PersonalExpand" Width="200" Header="Личные заметки" BorderBrush="Black" VerticalAlignment="Top" Expanded="PersonalExpand_Expanded">
+                        <ListBox x:Name="_personalNotesList" Height="120" MouseDoubleClick="_personalNotesList_MouseDoubleClick">
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="NoteAddItem" Click="NoteAddItem_Click" Header="Добавить"/>
+                                    <MenuItem x:Name="NoteInfoItem" Click="NoteInfoItem_Click" Header="Информация/Редактирование"/>
+                                    <MenuItem x:Name="NoteDeleteItem" Click="NoteDeleteItem_Click" Header="Удалить"/>
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                    </Expander>
+                    <!--Область личных заметок - старт -->
+                    <!--Область расшеренных заметок - старт -->
+                    <Expander x:Name="ShareExpand" Header="Доступные заметки" Width="200" BorderBrush="Black" VerticalAlignment="Top" Expanded="ShareExpand_Expanded">
+                        <ListBox x:Name="_sharesNoteList" Height="120" MouseDoubleClick="_sharesNoteList_MouseDoubleClick" >
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="ShareNoteInfoItem" Click="ShareNoteInfoItem_Click"  Header="Информация/Редактирование"/>
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                    </Expander>
+                    <!--Область расшеренных заметок - конец -->
+                </WrapPanel>
+            </Grid>
+            <!--Область заметок-->
+            <!--Область категорий-->
+            <Grid Margin="205, 0, 0, 0" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Expander x:Name="CategoryExpand" Header="Категории" Width="200" BorderBrush="Black"  Expanded="CategoryExpand_Expanded" HorizontalAlignment="Left">
+                    <Expander.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Обновить" x:Name="UpdateCategoryItem" Click="UpdateCategoryItem_Click"></MenuItem>
+                        </ContextMenu>
+                    </Expander.ContextMenu>
+                    <StackPanel>
+                        <!--Добавление новой категории - Старт -->
+                        <Grid Height="20">
+                            <TextBox x:Name="_newCatName" Width="100" Height="20" BorderBrush="Blue" VerticalAlignment="Top" HorizontalAlignment="Left"></TextBox>
+                            <Button x:Name="BtnAddCat" Margin="100, 0, 0, 0" Click="BtnAddCat_Click">Добавить</Button>
+                        </Grid>
+                        <!--Добавление новой категории - Конец -->
+                        <ListBox Height="100" Width="200" x:Name="_categoryList" >
+                        </ListBox>
+                    </StackPanel>
+                </Expander>
+            </Grid>
+            <!--Область категорий-->
+        </Grid>
+        <!--Рабочая область - Конец-->
     </Grid>
 </Window>

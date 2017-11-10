@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="AddShareList" Height="300" Width="300">
-    <Grid>
+        Title="AddShareList" Height="240" Width="300" ResizeMode="NoResize">
+    
+    <Grid Margin="0,0,0,0">
         <ListBox Margin="0, 15, 0, 0" x:Name="_shareList" Height="150" VerticalAlignment="Top">
             <ListBox.ContextMenu>
                 <ContextMenu>
@@ -15,8 +16,8 @@
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
-        <Grid Margin="0, 100, 0, 0" Height="50">
-            <TextBox  x:Name="_login" Height="25" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+        <Grid Margin="0,150,0,0" Height="25">
+            <TextBox x:Name="_login" Width="200" HorizontalAlignment="Left"/>
             <Button Click="BtnAdd_Click" Margin="210, 0, 0, 0" x:Name="BtnAdd" Height="25" Width="70" HorizontalAlignment="Left" VerticalAlignment="Top">Добавить</Button>
         </Grid>
     </Grid>

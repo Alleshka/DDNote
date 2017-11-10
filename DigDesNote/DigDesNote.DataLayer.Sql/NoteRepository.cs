@@ -332,5 +332,26 @@ namespace DigDesNote.DataLayer.Sql
                 }
             }
         }
+
+        public IEnumerable<Note> GetNoteFromCategory(Guid categoryId)
+        {
+            using (var _sqlConnection = new SqlConnection(_connectionString))
+            {
+                _sqlConnection.Open();
+                using (var _command = _sqlConnection.CreateCommand())
+                {
+                    _command.CommandText = "select note.id, note.creator, note.title, note.content, note.createDate, note.updateDate from TRefCategoryNote as TRC inner join TNote as note on TRC.noteId = note.id where TRC.categoryId =@categoryId";
+                    _command.Parameters.AddWithValue("@categoryId", categoryId);
+
+                    using (var reader = _command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            yield return ReaderGetNote(reader);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

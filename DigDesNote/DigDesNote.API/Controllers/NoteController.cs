@@ -236,5 +236,15 @@ namespace DigDesNote.API.Controllers
             _notesRepository.RemoveFromCategory(id, categoryId);
             Logger.Log.Instance.Info($"Заметку {id} удалена из категории {categoryId}");
         }
+
+
+        [HttpGet]
+        [CustomExceptionAtribute]
+        [Route("api/note/category/{id}")]
+        public IEnumerable<Note> NotesInCategory(Guid id)
+        {
+            Logger.Log.Instance.Info($"Попытка получить заметки из категории {id}");
+            return _notesRepository.GetNoteFromCategory(id);
+        }
     }
 }

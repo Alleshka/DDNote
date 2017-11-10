@@ -5,16 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DigDesNote.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="105" d:DesignWidth="235">
+             d:DesignHeight="250" d:DesignWidth="350">
     <Grid>
-        <StackPanel Width="225" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <StackPanel>
+
+            <!--Заголовок-->
             <Grid>
-                <TextBlock HorizontalAlignment="Left">Заголовок:</TextBlock>
-                <TextBox x:Name="_title" Margin="75,0,-0.2,-0.4" Height="18" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top">Заголовок:</TextBlock>
+                <TextBox x:Name="_title" Height="20" Width="235" Margin="70, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLength="45"/>
             </Grid>
-            <Grid>
-                <TextBlock Margin="0,0,0,0.2" HorizontalAlignment="Left" Width="74">Содержимое:</TextBlock>
-                <TextBox x:Name="_content" HorizontalAlignment="Left" Width="150" Height="75" Margin="75,0,-0.2,0" AcceptsReturn="True" VerticalAlignment="Top"></TextBox>
+
+            <Grid Margin="0, 20, 0, 0">
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top">Контент:</TextBlock>
+                <TextBox x:Name="_content" Height="200" Width="235" Margin="70, 0, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top" AcceptsReturn="True" SpellCheck.IsEnabled="True" Language="ru-ru" TextWrapping="Wrap" AcceptsTab="True"/>
             </Grid>
         </StackPanel>
     </Grid>

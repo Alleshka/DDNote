@@ -31,7 +31,6 @@ namespace DigDesNote.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [CustomExceptionAtribute]
-        [Authorize]
         [Route("api/category/{id}")]
         public Category GetCategoryInfo(Guid id)
         {
