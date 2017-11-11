@@ -57,7 +57,7 @@ namespace DigDesNote.UI.WPF
 
                 
                 // Сохраняем настройки
-                FileWork.SaveDataJson<LoginSet>(set, "adm//loginset.json");
+                FileWork.SaveDataJson<LoginSet>(set, System.Configuration.ConfigurationManager.AppSettings["loginset"]);
 
                 MessageBox.Show("Вход выполнен успешно");
                 this.DialogResult = true; // Закрываем форму

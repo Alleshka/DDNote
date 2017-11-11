@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AGLibrary.Files;
 using DigDesNote.Model;
+using System.Configuration;
 
 namespace DigDesNote.UI.WPF
 {
@@ -23,6 +24,7 @@ namespace DigDesNote.UI.WPF
     public partial class MainWindow : Window
     {
         private String _loginPath;
+        private String _domain;
 
         private ServiceClient _client;
         private Guid _curId; // ID пользователя, который залогинен (можно брать из файла)
@@ -42,24 +44,18 @@ namespace DigDesNote.UI.WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AdmClass adm = new AdmClass();
+            _domain = ConfigurationManager.AppSettings["hostdomain"];
+            _loginPath = ConfigurationManager.AppSettings["loginset"];
             try
             {
-                adm.ReadSet();
-                _client = new ServiceClient(adm._startDomain); // Инициализация домашнего домена
-                _loginPath = adm._loginSetPath;
-
+                _client = new ServiceClient(_domain); // Инициализация домашнего домена
                 DrawForm(false);
                 Login();
             }
             catch (Exception)
             {
                 MessageBox.Show("Необходим повторный вход");
-
-                if (adm != null)
-                {
-                    System.IO.File.Delete(adm._loginSetPath);
-                }
+                System.IO.File.Delete(_loginPath);
             }
         }
 
