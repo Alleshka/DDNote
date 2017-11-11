@@ -22,7 +22,7 @@ namespace DigDesNote.DataLayer.Sql
         /// <returns></returns>
         public Category Create(Guid userId, string name)
         {
-            using (var _sqlConnect = new SqlConnection(_connectionSring))
+            using (var _sqlConnect = new SqlConnection())
             {
                 Category _cat = new Category()
                 {

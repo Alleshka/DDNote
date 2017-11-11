@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DigDesNote.Model;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Configuration;
 
 namespace DigDesNote.DataLayer.Sql
 {

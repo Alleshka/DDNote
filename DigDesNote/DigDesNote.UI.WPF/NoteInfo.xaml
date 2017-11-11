@@ -22,7 +22,13 @@
             <Button HorizontalAlignment="Right" Width="75" x:Name="BtnClode" Click="BtnClode_Click" Content="Закрыть"/>
         </Grid>
         <Expander x:Name="ShareExpand" Header="Доступно пользователям" Expanded="ShareExpand_Expanded" HorizontalAlignment="Left" Width="308">
-            <ListView MouseDoubleClick="_shareList_MouseDoubleClick" x:Name="_shareList" Height="45" HorizontalAlignment="Left" Width="308" Margin="0,0,-2.4,0"></ListView>
+            <ListView MouseDoubleClick="_shareList_MouseDoubleClick" x:Name="_shareList" Height="45" HorizontalAlignment="Left" Width="308" Margin="0,0,-2.4,0">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Изменить пользователей" Click="MenuItem_Click"></MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
         </Expander>
         <Expander x:Name="_categoryExpand" Header="Категории" Expanded="_categoryExpand_Expanded" HorizontalAlignment="Left" Width="308">
             <ListView MouseDoubleClick="_categoryList_MouseDoubleClick" x:Name="_categoryList" Height="45"/>

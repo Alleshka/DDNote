@@ -23,15 +23,17 @@ namespace DigDesNote.UI.WPF
         private Guid _noteId;
         private ServiceClient _client;
         private Note _note;
+        private Guid _userId;
 
         private bool reduct = false;
 
-        public NoteInfo(ServiceClient clietn, Guid note)
+        public NoteInfo(ServiceClient clietn, Guid note, Guid userId)
         {
             InitializeComponent();
 
             _noteId = note;
             _client = clietn;
+            _userId = userId;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -43,6 +45,12 @@ namespace DigDesNote.UI.WPF
 
             _noteConrol.Title = _note._title;
             _noteConrol.NoteContent = _note._content;
+
+            if (_userId != _note._creator)
+            {
+                ShareExpand.IsEnabled = false;
+                _categoryExpand.IsEnabled = false;
+            }
         }
 
         // Срабатывает при нажатии "Сохранить"
@@ -53,7 +61,8 @@ namespace DigDesNote.UI.WPF
                 _note._content = _noteConrol.NoteContent;
                 _note._title = _noteConrol.Title;
                 _note = _client.UpdateNote(_note);
-                this.DialogResult = true;
+                reduct = true;
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -111,6 +120,17 @@ namespace DigDesNote.UI.WPF
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.DialogResult = reduct;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AddShareList asl = new AddShareList(_client, _noteId);
+            if (asl.ShowDialog() == true)
+            {
+                // _client.SynchronizationNotes(_client.GetBasicNoteInfo(_noteId)._creator);
+                _shareList.ItemsSource = from shar in _client.GetShares(_noteId) select _client.GetBasicUserInfo(shar)._login;
+                reduct = true;
+            }
         }
     }
 }

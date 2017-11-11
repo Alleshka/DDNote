@@ -11,7 +11,8 @@ namespace DigDesNote.API.Controllers
     public class NoteController : ApiController
     {
         private INotesRepository _notesRepository;
-        private String _connectionString = @"Data Source=DESKTOP-H4JQP0V;Initial Catalog=NoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private String _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["_connectionString"].ConnectionString;
+        //private String _connectionString = @"Data Source=DigDesNoteDb.mssql.somee.com;Initial Catalog=DigDesNoteDb;Integrated Security=False;User ID=Alleshka_SQLLogin_1;Password=atxj8cdh9i;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         private List<ValidationResult> result;
         private ValidationContext context;
@@ -184,7 +185,11 @@ namespace DigDesNote.API.Controllers
         public void Share(Guid id, Guid userid)
         {
             Logger.Log.Instance.Info($"Расшарить заметку {id} пользователю {userid}");
-            if (_notesRepository.GetBasicNote(id) == null) throw new NotFoundException($"Заметка {id} не найдена");
+            Note temp = _notesRepository.GetBasicNote(id);
+
+            if ( temp == null) throw new NotFoundException($"Заметка {id} не найдена");
+            if (temp._creator == userid) throw new Exception($"Нельзя поделиться заметку самому себе");
+
             _notesRepository.Share(id, userid);
             Logger.Log.Instance.Info($"Заметка {id} расшарена пользователю {userid}");
         }

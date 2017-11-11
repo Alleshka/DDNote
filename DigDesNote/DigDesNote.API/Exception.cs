@@ -42,15 +42,26 @@ namespace DigDesNote.API
                     System.Data.SqlClient.SqlException ex = (System.Data.SqlClient.SqlException)actionExecutedContext.Exception;
                     response = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
 
-                    if (ex.Number == 2)
+                    switch (ex.Number)
                     {
-                        message = "Отсутствует подключение к базе данных";                      
+                        case 2:
+                            {
+                                message = "Отсутствует подключение к базе данных";
+                                break;
+                            }
+                        case 2627:
+                            {
+                                message = "Такой элемент уже сушествует";
+                                break;
+                            }
+                        default:
+                            {
+                                message = "Необработанная ошибка при обращении к базе данных" + Environment.NewLine + actionExecutedContext.Exception.ToString();
+                                break;
+                            }
                     }
-                    else
-                    {
-                        message = "Ошибка при обращении к базе данных";
-                    }
-                    Logger.Log.Instance.Error(message + Environment.NewLine + actionExecutedContext.Exception.ToString());
+  
+                    Logger.Log.Instance.Error(message);
                 }
 
                 if (actionExecutedContext.Exception is ModelNotValid)

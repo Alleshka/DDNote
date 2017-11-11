@@ -13,6 +13,9 @@
                 <MenuItem x:Name="Synchronize" Header="Синхронизация" Click="Synchronize_Click"/>
                 <MenuItem x:Name="ClodeProgram" Header="Выход из УЗ" Click="ClodeProgram_Click"/>
             </MenuItem>
+            <MenuItem Header="Заметки">
+                <MenuItem x:Name="CreateNoteMenuItem" Header="Создать заметку" Click="NoteAddItem_Click"></MenuItem>
+            </MenuItem>
         </Menu>
         <!-- Область меню - Конец -->
         
@@ -34,7 +37,10 @@
                                 <ContextMenu>
                                     <MenuItem x:Name="NoteAddItem" Click="NoteAddItem_Click" Header="Добавить"/>
                                     <MenuItem x:Name="NoteInfoItem" Click="NoteInfoItem_Click" Header="Информация/Редактирование"/>
+                                    <MenuItem x:Name="ShareNotesItem" Header="Поделиться/Отписать" Click="ShareNotesItem_Click"/>
+                                    <MenuItem x:Name="CategoryNotesItem" Header="Категории" Click="CategoryNotesItem_Click"/>
                                     <MenuItem x:Name="NoteDeleteItem" Click="NoteDeleteItem_Click" Header="Удалить"/>
+
                                 </ContextMenu>
                             </ListBox.ContextMenu>
                         </ListBox>
@@ -46,6 +52,7 @@
                             <ListBox.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem x:Name="ShareNoteInfoItem" Click="ShareNoteInfoItem_Click"  Header="Информация/Редактирование"/>
+                                    <MenuItem x:Name="UnSubscribe" Click="UnSubscribe_Click" Header="Отписаться"/>
                                 </ContextMenu>
                             </ListBox.ContextMenu>
                         </ListBox>

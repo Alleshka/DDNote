@@ -42,6 +42,7 @@ namespace DigDesNote.UI.WPF
                 };
 
                 newNote = _client.CreateNote(newNote);
+                // _client.SynchronizationNotes(_curId);
                 MessageBox.Show("Заметка успешно создана");
 
                 this.DialogResult = true;

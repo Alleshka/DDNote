@@ -55,6 +55,7 @@ namespace DigDesNote.UI.WPF
                     _userId = gui
                 };
 
+                
                 // Сохраняем настройки
                 FileWork.SaveDataJson<LoginSet>(set, "adm//loginset.json");
 

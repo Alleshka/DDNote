@@ -42,10 +42,25 @@ namespace DigDesNote.UI.WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _client = new ServiceClient("http://localhost:41606/api/"); // Инициализация домашнего домена
-            _loginPath = AdmClass._loginSetPath;
-            DrawForm(false);
-            Login();
+            AdmClass adm = new AdmClass();
+            try
+            {
+                adm.ReadSet();
+                _client = new ServiceClient(adm._startDomain); // Инициализация домашнего домена
+                _loginPath = adm._loginSetPath;
+
+                DrawForm(false);
+                Login();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Необходим повторный вход");
+
+                if (adm != null)
+                {
+                    System.IO.File.Delete(adm._loginSetPath);
+                }
+            }
         }
 
         /// <summary>
@@ -53,13 +68,13 @@ namespace DigDesNote.UI.WPF
         /// </summary>
         private void Login()
         {
-            AGLibrary.Files.FileWork.ReadDataJson<LoginSet>(out LoginSet loginSet, "adm//loginset.json"); // Считываем информацию о входе
+            AGLibrary.Files.FileWork.ReadDataJson<LoginSet>(out LoginSet loginSet, _loginPath); // Считываем информацию о входе
 
             // Если не залогинились, то выводим форму входа
             if ((loginSet == null))
             {
                 LoginWindow login = new LoginWindow(_client);
-                if(login.ShowDialog()==true) FileWork.ReadDataJson<LoginSet>(out loginSet, "adm//loginset.json"); // Считываем информацию о входе
+                if(login.ShowDialog()==true) FileWork.ReadDataJson<LoginSet>(out loginSet, _loginPath); // Считываем информацию о входе
             }
 
             if (loginSet != null)
@@ -70,12 +85,14 @@ namespace DigDesNote.UI.WPF
                 _login.Text = _client.GetBasicUserInfo(_curId)._login; // Выводим его на форме
 
                 DrawForm(true);
+
                 // Чтобы форма была красивой
                 ExpandReInit();
+
+                _personalNotesList.ItemsSource = from note in _client.GetPersonalNotes(_curId) select note._title;
+                _sharesNoteList.ItemsSource = from note in _client.GetSharesNotes(_curId) select note._title + " (" + _client.GetBasicUserInfo(note._creator)._login + ")";
             }
         }
-
-
 
         private void GetCurLogin()
         {
@@ -98,12 +115,7 @@ namespace DigDesNote.UI.WPF
         // Срабатывает при двойном клике по личным заметкам
         private void _personalNotesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            NoteInfo noteInfo = new NoteInfo(_client, _client.GetPersonalNotes().ToList()[_personalNotesList.SelectedIndex]._id);
-            if (noteInfo.ShowDialog() == true)
-            {
-                UpdateCategories();
-                UpdatePersonalNotes();
-            }
+            OpenNoteInfo(_client.GetPersonalNotes(_curId).ToList()[_personalNotesList.SelectedIndex]._id);
         }
 
         // Срабатывает при развороте Expanda с чужими заметками
@@ -118,8 +130,7 @@ namespace DigDesNote.UI.WPF
         // Двойной клик по чужим заметкам
         private void _sharesNoteList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            NoteInfo noteInfo = new NoteInfo(_client, _client.GetSharesNotes().ToList()[_sharesNoteList.SelectedIndex]._id);
-            if (noteInfo.ShowDialog() == true) UpdateSharesNotes();
+            OpenNoteInfo(_client.GetSharesNotes(_curId).ToList()[_sharesNoteList.SelectedIndex]._id);
         }
 
         // Выход из УЗ
@@ -143,13 +154,20 @@ namespace DigDesNote.UI.WPF
         // Нажатие на кнопку "Добавить заметку"
         private void BtnAddCat_Click(object sender, RoutedEventArgs e)
         {
-            _client.CreateCategory(new Category()
+            try
             {
-                _name = _newCatName.Text,
-                _userId = _curId
-            });
-            _categoryList.Items.Clear();
-            UpdateCategories(); // Обновляем список категорий
+                _client.CreateCategory(new Category()
+                {
+                    _name = _newCatName.Text,
+                    _userId = _curId
+                });
+                _categoryList.Items.Clear();
+                UpdateCategories(); // Обновляем список категорий
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         // Нажатие на кнопку "Информация о заметке"
@@ -160,8 +178,7 @@ namespace DigDesNote.UI.WPF
                 if (_personalNotesList.Items.Count <= 0) throw new Exception("Отсутствуют заметки");
                 if (_personalNotesList.SelectedIndex == -1) throw new Exception("Необходимо выбрать заметку");
 
-                NoteInfo noteInfo = new NoteInfo(_client, _client.GetPersonalNotes().ToList()[_personalNotesList.SelectedIndex]._id);
-                if (noteInfo.ShowDialog() == true) UpdatePersonalNotes();
+                OpenNoteInfo(_client.GetPersonalNotes(_curId).ToList()[_personalNotesList.SelectedIndex]._id);
             }
             catch (Exception ex)
             {
@@ -182,8 +199,10 @@ namespace DigDesNote.UI.WPF
             try
             {
                 if (_personalNotesList.SelectedIndex == -1) throw new Exception("Необходимо выбрать заметку");
-                _client.DeleteNote(_client.GetPersonalNotes().ToList()[_personalNotesList.SelectedIndex]._id);
+                _client.DeleteNote(_client.GetPersonalNotes(_curId).ToList()[_personalNotesList.SelectedIndex]._id);
+
                 UpdatePersonalNotes();
+                UpdateCategories();
             }
             catch (Exception ex)
             {
@@ -201,13 +220,25 @@ namespace DigDesNote.UI.WPF
         // Нажатие на кнопку информациии о зaметке в контекстном меню 
         private void ShareNoteInfoItem_Click(object sender, RoutedEventArgs e)
         {
-            NoteInfo noteInfo = new NoteInfo(_client, _client.GetSharesNotes().ToList()[_sharesNoteList.SelectedIndex]._id);
-            if (noteInfo.ShowDialog() == true) UpdateSharesNotes();
+            try
+            {
+                if (_personalNotesList.Items.Count == 0) throw new Exception("Отсутствуют заметки");
+                if (_personalNotesList.SelectedIndex == -1) throw new Exception("Необходимо выбрать заметку");
+                OpenNoteInfo(_client.GetSharesNotes(_curId).ToList()[_sharesNoteList.SelectedIndex]._id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Synchronize_Click(object sender, RoutedEventArgs e)
         {
             ExpandReInit();
+
+            _client.SynchronizatioCategories(_curId);
+            _client.SynchronizationNotes(_curId);
+
             UpdatePersonalNotes();
             UpdateSharesNotes();
             UpdateCategories();
@@ -220,17 +251,51 @@ namespace DigDesNote.UI.WPF
             if ((set!=null)&&(set._statusLogin == false)) System.IO.File.Delete(_loginPath);
         }
 
+        private void UnSubscribe_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_sharesNoteList.Items.Count == 0) throw new Exception("Заметки отсутствуют");
+                if (_sharesNoteList.SelectedIndex == -1) throw new Exception("Необходимо выбрать заметку");
+                _client.UnShareNoteToUser(_curId, _client.GetSharesNotes(_curId).ToList()[_sharesNoteList.SelectedIndex]._id);
+                _client.SynchronizationNotes(_curId);
+                UpdateSharesNotes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ShareNotesItem_Click(object sender, RoutedEventArgs e)
+        {
+            AddShareList share = new AddShareList(_client, _client.GetPersonalNotes(_curId).ToList()[_personalNotesList.SelectedIndex]._id);
+            if (share.ShowDialog() == true)
+            {
+                UpdateSharesNotes();
+            }
+        }
+
+        private void CategoryNotesItem_Click(object sender, RoutedEventArgs e)
+        {
+            AddCategoryWindow addCategoryWindow = new AddCategoryWindow(_client, _curId, _client.GetPersonalNotes(_curId).ToList()[_personalNotesList.SelectedIndex]._id);
+            if (addCategoryWindow.ShowDialog()==true)
+            {
+                UpdateCategories();
+            }
+        }
+
         // -----------------------------------------------------------------------
 
         private void OpenNoteInfo(Guid noteId)
         {
-            NoteInfo info = new NoteInfo(_client, noteId);
+            NoteInfo info = new NoteInfo(_client, noteId, _curId);
             if (info.ShowDialog() == true)
             {
                 ExpandReInit();
 
-                _client.SynchronizatioCategories(_curId);
-                _client.SynchronizationNotes(_curId);
+                //_client.SynchronizatioCategories(_curId);
+                //_client.SynchronizationNotes(_curId);
 
                 UpdateSharesNotes();
                 UpdatePersonalNotes();
@@ -248,15 +313,15 @@ namespace DigDesNote.UI.WPF
         // Обновление личных заметок
         private void UpdatePersonalNotes()
         {
-            _client.SynchronizationNotes(_curId);
-            _personalNotesList.ItemsSource = from note in _client.GetPersonalNotes() select note._title;
+            // _client.SynchronizationNotes(_curId);
+            _personalNotesList.ItemsSource = from note in _client.GetPersonalNotes(_curId) select note._title;
         }
 
         // Обновление расшареных заметок
         private void UpdateSharesNotes()
         {
-            _client.SynchronizationNotes(_curId);
-            _sharesNoteList.ItemsSource = from note in _client.GetSharesNotes() select note._title + " (" + _client.GetBasicUserInfo(note._creator)._login + ")";
+            // _client.SynchronizationNotes(_curId);
+            _sharesNoteList.ItemsSource = from note in _client.GetSharesNotes(_curId) select note._title + " (" + _client.GetBasicUserInfo(note._creator)._login + ")";
         }
 
         // Обновление категорий
@@ -264,7 +329,7 @@ namespace DigDesNote.UI.WPF
         {
             _categoryList.Items.Clear();
 
-            _client.SynchronizatioCategories(_curId);
+            //_client.SynchronizatioCategories(_curId);
             // Считываем все категории пользователя
             IEnumerable<Category> category = _client.GetAllCategories(_curId);
 
@@ -277,10 +342,11 @@ namespace DigDesNote.UI.WPF
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Width = 180
                 };
+
                 // Создаём экспандер с именем категории
                 Expander expander = new Expander()
                 {
-                    Header = k._name + " (" + temp.Items.Count + " элементов)",
+                    Header = k._name + " (Заметок: " + temp.Items.Count + ")",
                     // В листбокс пихаем заголовки заметок из этой категории
                     Content = temp,
                     Width = 180,
@@ -310,5 +376,7 @@ namespace DigDesNote.UI.WPF
             ShareExpand.IsExpanded = false;
             // CategoryExpand.IsExpanded = false;
         }
+
+
     }
 }

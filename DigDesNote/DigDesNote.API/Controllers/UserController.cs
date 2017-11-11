@@ -16,7 +16,8 @@ namespace DigDesNote.API.Controllers
     public class UserController : ApiController
     {
         private IUsersRepository _userRepository;
-        private String _connectionString = @"Data Source=DESKTOP-H4JQP0V;Initial Catalog=NoteDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private String _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["_connectionString"].ConnectionString;
+        // private String _connectionString = @"Data Source=DigDesNoteDb.mssql.somee.com;Initial Catalog=DigDesNoteDb;Integrated Security=False;User ID=Alleshka_SQLLogin_1;Password=atxj8cdh9i;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         private List<ValidationResult> result;
         private ValidationContext context;

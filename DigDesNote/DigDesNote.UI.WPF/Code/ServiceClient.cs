@@ -14,12 +14,13 @@ namespace DigDesNote.UI.WPF
     public class ServiceClient
     {
         private readonly HttpClient _client;
+        private List<Note> _alluserNotes = null; // Все заметки
+        //private List<Note> _personalNotes = null; // Личные заметки пользователя 
+        //private List<Note> _sharesNotes = null; // Расшаренные пользователю заметки
 
-        private IEnumerable<Note> _alluserNotes = null; // Все заметки
-        private IEnumerable<Note> _personalNotes = null; // Личные заметки пользователя 
-        private IEnumerable<Note> _sharesNotes = null; // Расшаренные пользователю заметки
+        private List<Category> _categories = null; // Категории пользователя
 
-        private IEnumerable<Category> _categories = null; // Категории пользователя
+        private User _curUser = null;
 
         private List<ValidationResult> result;
         private ValidationContext context;
@@ -81,7 +82,13 @@ namespace DigDesNote.UI.WPF
         public Guid Login(User user)
         {
             var response = _client.PostAsJsonAsync<User>("user/login", user).Result;
-            return ResponseParse<Guid>(response); // Получаем id вошедшего пользователя
+            Guid userGui = ResponseParse<Guid>(response); // Получаем id вошедшего пользователя 
+
+            // Синхронизируемся
+            SynchronizatioCategories(userGui);
+            SynchronizationNotes(userGui);
+
+            return userGui;
         }
 
         /// <summary>
@@ -90,8 +97,13 @@ namespace DigDesNote.UI.WPF
         /// <param name="id">ID пользователя</param>
         public User GetBasicUserInfo(Guid id)
         {
-            var response = _client.GetAsync($"user/{id}").Result;
-            return ResponseParse<User>(response);
+            if ((_curUser == null) || (_curUser._id != id))
+            {
+                var response = _client.GetAsync($"user/{id}").Result;
+                _curUser = ResponseParse<User>(response);
+            }
+
+            return _curUser;
         }
 
         /// <summary>
@@ -101,16 +113,13 @@ namespace DigDesNote.UI.WPF
         public void SynchronizationNotes(Guid id)
         {
             var response = _client.GetAsync($"user/{id}/notes").Result;
-            _alluserNotes = ResponseParse<IEnumerable<Note>>(response); // Синхронизируем все заметки пользователя
-
-            _personalNotes = _alluserNotes.Where(x => x._creator == id).OrderBy(x => x._updated); // Получаем личные заметки пользователя
-            _sharesNotes = _alluserNotes.Where(x => x._creator != id).OrderBy(x => x._updated); // Получаем расшаренные пользователю заметки
+            _alluserNotes = ResponseParse<IEnumerable<Note>>(response).ToList(); // Синхронизируем все заметки пользователя
         }
 
         // Получиь все виды заметок
-        public IEnumerable<Note> GetAllNotes() => _alluserNotes;
-        public IEnumerable<Note> GetPersonalNotes() => _personalNotes;
-        public IEnumerable<Note> GetSharesNotes() => _sharesNotes;
+        public IEnumerable<Note> GetAllNotes(Guid id) => _alluserNotes;
+        public IEnumerable<Note> GetPersonalNotes(Guid id) => _alluserNotes.Where(x => x._creator == id).OrderBy(x => x._updated).ToList(); // Получаем личные заметки пользователя;
+        public IEnumerable<Note> GetSharesNotes(Guid id) => _alluserNotes.Where(x => x._creator != id).OrderBy(x => x._updated).ToList();
 
         /// <summary>
         /// Создать заметку
@@ -121,7 +130,10 @@ namespace DigDesNote.UI.WPF
             if (ValidateModel<Note>(note))
             {
                 var response = _client.PostAsJsonAsync<Note>("note", note).Result;
-                return ResponseParse<Note>(response); // Возвращаем новую заметку
+                note = ResponseParse<Note>(response); // Возвращаем новую заметку
+                _alluserNotes.Add(note);
+
+                return note;
             }
             else throw new Exception(GetErrors(result));
         }
@@ -133,19 +145,29 @@ namespace DigDesNote.UI.WPF
         /// <returns></returns>
         public Note GetBasicNoteInfo(Guid id)
         {
-            var response = _client.GetAsync($"note/{id}").Result;
-            return ResponseParse<Note>(response); // Получить основную информацию о заметке
+            return _alluserNotes.Where(x => x._id == id).First();
+            //var response = _client.GetAsync($"note/{id}").Result;
+            //return ResponseParse<Note>(response); // Получить основную информацию о заметке
         }
+
         /// <summary>
         /// Получить информацию о категориях из заметки
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns></returns>Synchro
         public IEnumerable<Category> GetNoteCategories(Guid id)
         {
-            var response = _client.GetAsync($"note/{id}/categories").Result;
-            return ResponseParse<IEnumerable<Category>>(response); // Вернуть категории из заметки
+            Note temp = _alluserNotes.Where(x => x._id == id).First();
+
+            if (temp._categories == null)
+            {
+                var response = _client.GetAsync($"note/{id}/categories").Result;
+                temp._categories = ResponseParse<IEnumerable<Category>>(response); // Вернуть категории из заметки
+            }
+
+            return temp._categories;
         }
+
         /// <summary>
         /// Вернуть информацию о том, кому доступна данная заметка
         /// </summary>
@@ -153,8 +175,15 @@ namespace DigDesNote.UI.WPF
         /// <returns></returns>
         public IEnumerable<Guid> GetShares(Guid id)
         {
-            var response = _client.GetAsync($"note/{id}/shares").Result;
-            return ResponseParse<IEnumerable<Guid>>(response);
+            Note temp = GetBasicNoteInfo(id);
+
+            if (temp._shares == null)
+            {
+                var response = _client.GetAsync($"note/{id}/shares").Result;
+                temp._shares = ResponseParse<IEnumerable<Guid>>(response);
+            }
+
+            return temp._shares;
         }
 
         /// <summary>
@@ -167,7 +196,12 @@ namespace DigDesNote.UI.WPF
             if (ValidateModel<Note>(note))
             {
                 var response = _client.PutAsJsonAsync<Note>("note", note).Result;
-                return ResponseParse<Note>(response); // Возвращаем новую заметку
+
+                _alluserNotes.RemoveAll(x => x._id == note._id); // Удаляем элементы из коллекции 
+                note = ResponseParse<Note>(response); // Возвращаем новую заметку
+                _alluserNotes.Add(note); // Добавляем новую заметку
+                // SynchronizationNotes(note._creator);
+                return note;
             }
             else throw new Exception(GetErrors(result));
         }
@@ -177,18 +211,39 @@ namespace DigDesNote.UI.WPF
         /// </summary>
         /// <param name="noteId">ID заметки</param>
         /// <param name="categoryId">ID категории</param>
-        public void AddNoteToCategory(Guid noteId, Guid categoryId)
+        public String AddNoteToCategory(Guid noteId, Guid categoryId)
         {
             var response = _client.PostAsync($"note/{noteId}/addcategory/{categoryId}", null).Result;
+            String repl = ResponseParse<String>(response);
+
+            Note temp = _alluserNotes.Where(x => x._id == noteId).First();
+            // Обновляем категории 
+            if (temp._categories != null)
+            {
+                temp._categories = null;
+                // GetNoteCategories(temp._id);
+            }
+            return repl;
         }
+
         /// <summary>
         /// Удалить заметку из категории
         /// </summary>
         /// <param name="categoryId"></param>
         /// <param name="noteId"></param>
-        public void DelNoteFromCategory(Guid noteId, Guid categoryId)
+        public String DelNoteFromCategory(Guid noteId, Guid categoryId)
         {
            var response = _client.PostAsync($"note/{noteId}/delcategory/{categoryId}", null).Result;
+           String repl = ResponseParse<String>(response);
+
+            Note temp = _alluserNotes.Where(x => x._id == noteId).First();
+            // Обновляем категории 
+            if (temp._categories != null)
+            {
+                temp._categories = null;
+                // GetNoteCategories(temp._id);
+            };
+            return repl;
         }
 
         /// <summary>
@@ -196,9 +251,15 @@ namespace DigDesNote.UI.WPF
         /// </summary>
         /// <param name="login">Логин пользователя</param>
         /// <param name="noteId">ID заметки</param>
-        public void ShareNoteToUser(String login, Guid noteId)
+        public String ShareNoteToUser(String login, Guid noteId)
         {
-            var response = _client.PostAsync($"note/{noteId}/share/{GetBasicUserInfo(login)._id}", null).Result;
+            var response = _client.PostAsync($"note/{noteId}/share/{GetBasicUserInfo(login)._id}", null).Result;   
+            String repl = ResponseParse<String>(response);
+
+            Note temp = _alluserNotes.Where(x => x._id == noteId).First();
+            temp._shares = null;
+
+            return repl;
         }
 
         /// <summary>
@@ -206,9 +267,16 @@ namespace DigDesNote.UI.WPF
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="noteId"></param>
-        public void UnShareNoteToUser(Guid userId, Guid noteId)
+        public String UnShareNoteToUser(Guid userId, Guid noteId)
         {
             var response = _client.PostAsync($"note/{noteId}/unshare/{userId}", null).Result;
+
+            String repl = ResponseParse<String>(response);
+
+            Note temp = _alluserNotes.Where(x => x._id == noteId).First();
+            temp._shares = null;
+
+            return repl;
         }
 
         /// <summary>
@@ -218,15 +286,20 @@ namespace DigDesNote.UI.WPF
         /// <returns></returns>
         public User GetBasicUserInfo(String login)
         {
-            var response = _client.GetAsync($"user/login/{login}").Result;
-            return ResponseParse<User>(response);
+            if (login != _curUser._login)
+            {
+                var response = _client.GetAsync($"user/login/{login}").Result;
+                _curUser = ResponseParse<User>(response);
+            }
+
+            return _curUser;
         }
 
         /// Синхронизировать категории пользователя
         public void SynchronizatioCategories(Guid id)
         {
             var response = _client.GetAsync($"user/{id}/categories").Result;
-            _categories = ResponseParse<IEnumerable<Category>>(response);
+            _categories = ResponseParse<IEnumerable<Category>>(response).ToList();
         }
 
         /// <summary>
@@ -252,19 +325,29 @@ namespace DigDesNote.UI.WPF
             if (ValidateModel<Category>(cat))
             {
                 var response = _client.PostAsJsonAsync<Category>("category", cat).Result;
-                return ResponseParse<Category>(response);
+                Category temp = ResponseParse<Category>(response);
+                _categories.Add(temp);
+                return temp;
             }
             else throw new Exception(GetErrors(result));
         }
 
-        public void DelCategory(Guid id)
+        public String DelCategory(Guid id)
         {
             var response = _client.DeleteAsync($"category/{id}").Result;
+            String repl = ResponseParse<String>(response);
+
+            _categories.RemoveAll(x => x._id == id); // Удаляем категории из памяти
+
+            return repl;
         }
 
-        public void DeleteNote(Guid note)
+        public String DeleteNote(Guid note)
         {
-            var responce = _client.DeleteAsync($"note/{note}").Result;            
+            var response = _client.DeleteAsync($"note/{note}").Result;
+            String answ = ResponseParse<String>(response);
+            _alluserNotes.RemoveAll(x => x._id == note); // Удаляем элементы из коллекции
+            return answ;
         }
     }
 }
