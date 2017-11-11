@@ -33,14 +33,14 @@ namespace DigDesNote.API
         {
             if (actionExecutedContext != null)
             {
-                HttpResponseMessage responce = null;
+                HttpResponseMessage response = null;
                 String message = "";
 
                 // В зависимости от ситуаций
                 if (actionExecutedContext.Exception is System.Data.SqlClient.SqlException)
                 {
                     System.Data.SqlClient.SqlException ex = (System.Data.SqlClient.SqlException)actionExecutedContext.Exception;
-                    responce = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+                    response = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
 
                     if (ex.Number == 2)
                     {
@@ -55,29 +55,29 @@ namespace DigDesNote.API
 
                 if (actionExecutedContext.Exception is ModelNotValid)
                 {
-                    responce = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
+                    response = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
                     message = actionExecutedContext.Exception.Message;
                     Logger.Log.Instance.Warn(actionExecutedContext.Exception.Message);
                 }
 
                 if (actionExecutedContext.Exception is NotFoundException)
                 {
-                    responce = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
+                    response = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
                     message = actionExecutedContext.Exception.Message;
                     Logger.Log.Instance.Warn(actionExecutedContext.Exception.Message);
                 }
 
                 // Если необработанная ошибка
-                if (responce == null)
+                if (response == null)
                 {
                     // Дефолтные значения
-                    responce = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+                    response = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
                     message = actionExecutedContext.Exception.Message;
                     Logger.Log.Instance.Error(actionExecutedContext.Exception.Message);
                 }
 
-                responce.Content = new StringContent(message);
-                throw new HttpResponseException(responce);
+                response.Content = new StringContent(message);
+                throw new HttpResponseException(response);
             }
         }
     }

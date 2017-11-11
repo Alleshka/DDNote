@@ -29,6 +29,7 @@ namespace DigDesNote.UI.WPF
         public NoteInfo(ServiceClient clietn, Guid note)
         {
             InitializeComponent();
+
             _noteId = note;
             _client = clietn;
         }
@@ -47,10 +48,17 @@ namespace DigDesNote.UI.WPF
         // Срабатывает при нажатии "Сохранить"
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            _note._content = _noteConrol.NoteContent;
-            _note._title = _noteConrol.Title;
-            _note = _client.UpdateNote(_note);
-            this.DialogResult = true;
+            try
+            {
+                _note._content = _noteConrol.NoteContent;
+                _note._title = _noteConrol.Title;
+                _note = _client.UpdateNote(_note);
+                this.DialogResult = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         // Срабатывает при нажатии закрыть
@@ -76,6 +84,7 @@ namespace DigDesNote.UI.WPF
             AddShareList asl = new AddShareList(_client, _noteId);
             if (asl.ShowDialog() == true)
             {
+                // _client.SynchronizationNotes(_client.GetBasicNoteInfo(_noteId)._creator);
                 _shareList.ItemsSource = from shar in _client.GetShares(_noteId) select _client.GetBasicUserInfo(shar)._login;
                 reduct = true;
             }

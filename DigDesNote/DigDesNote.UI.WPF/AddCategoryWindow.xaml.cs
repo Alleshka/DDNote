@@ -68,15 +68,34 @@ namespace DigDesNote.UI.WPF
         // Добавить категорию
         private void AddCategoryItem_Click(object sender, RoutedEventArgs e)
         {
-            _client.AddNoteToCategory(_noteID, _allcategory[AllCategory.SelectedIndex]._id);
-            RefreshCategories();
+            try
+            {
+                if (AllCategory.Items.Count == 0) throw new Exception("Необходимо создать категорию");
+                if (AllCategory.SelectedIndex == -1) throw new Exception("Необходимо выбрать категорию");
+
+                _client.AddNoteToCategory(_noteID, _allcategory[AllCategory.SelectedIndex]._id);
+                RefreshCategories();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         // Удалить категорию
         private void DelCategoryItem_Click(object sender, RoutedEventArgs e)
         {
-            _client.DelNoteFromCategory(_noteID, _curCategory[AddedCategory.SelectedIndex]._id);
-            RefreshCategories();
+            try
+            {
+                if (AddedCategory.Items.Count == 0) throw new Exception("Отсутствуют добавленные категории");
+                if (AddedCategory.SelectedIndex == -1) throw new Exception("Небходимо выбрать категорию");
+                _client.DelNoteFromCategory(_noteID, _curCategory[AddedCategory.SelectedIndex]._id);
+                RefreshCategories();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -41,8 +41,17 @@ namespace DigDesNote.UI.WPF
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            _client.ShareNoteToUser(_login.Text, _noteId);
-            RefreshList();
+            try
+            {
+                if ((_login.Text == "") || (_login.Text.Length == 0)) throw new Exception("Необходимо указать логин пользователя");
+
+                _client.ShareNoteToUser(_login.Text, _noteId);
+                RefreshList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void RefreshList()
@@ -56,8 +65,18 @@ namespace DigDesNote.UI.WPF
 
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _client.UnShareNoteToUser(_userList[_shareList.SelectedIndex]._id, _noteId); // Убираем шару
-            RefreshList();
+            try
+            {
+                if (_shareList.Items.Count == 0) throw new Exception("Отсутствует список пользователей");
+                if (_shareList.SelectedIndex == -1) throw new Exception("Необходимо выбрать пользователя");
+
+                _client.UnShareNoteToUser(_userList[_shareList.SelectedIndex]._id, _noteId); // Убираем шару
+                RefreshList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void UpdateMenuItem_Click(object sender, RoutedEventArgs e)

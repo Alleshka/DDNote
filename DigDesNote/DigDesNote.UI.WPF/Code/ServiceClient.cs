@@ -6,6 +6,8 @@ using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using DigDesNote.Model;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace DigDesNote.UI.WPF
 {
@@ -19,6 +21,9 @@ namespace DigDesNote.UI.WPF
 
         private IEnumerable<Category> _categories = null; // Категории пользователя
 
+        private List<ValidationResult> result;
+        private ValidationContext context;
+
         public ServiceClient(String _connectionString)
         {
             _client = new HttpClient()
@@ -30,11 +35,26 @@ namespace DigDesNote.UI.WPF
         }
         private T ResponseParse<T>(HttpResponseMessage response)
         {
-            if ((response.StatusCode == System.Net.HttpStatusCode.OK) || (response.StatusCode == System.Net.HttpStatusCode.NoContent))
+            if (response.IsSuccessStatusCode)
             {
                 return response.Content.ReadAsAsync<T>().Result; // Возвращаем Содержимое            
             }
             else throw new Exception(response.Content.ReadAsStringAsync().Result); // Кидаем ошибку
+        }
+
+        private String GetErrors(List<ValidationResult> result)
+        {
+            String message = "Ошибка данных: ";
+            foreach (var error in result) message += Environment.NewLine + error.ErrorMessage;
+            return message;
+        }
+        private bool ValidateModel<T>(T model)
+        {
+            context = new ValidationContext(model);
+            result = new List<ValidationResult>();
+
+            if (Validator.TryValidateObject(model, context, result)) return true;
+            else return false;
         }
 
         /// <summary>
@@ -42,8 +62,15 @@ namespace DigDesNote.UI.WPF
         /// </summary>
         public User CreateUser(User user)
         {
-            var responce = _client.PostAsJsonAsync<User>("user", user).Result;
-            return ResponseParse<User>(responce); // Получаем ответ
+            if (ValidateModel<User>(user))
+            {
+                var responce = _client.PostAsJsonAsync<User>("user", user).Result;
+                return ResponseParse<User>(responce); // Получаем ответ
+            }
+            else
+            {
+                throw new Exception(GetErrors(result));
+            }
         }
 
         /// <summary>
@@ -91,8 +118,12 @@ namespace DigDesNote.UI.WPF
         /// <param name="note"></param>
         public Note CreateNote(Note note)
         {
-            var response = _client.PostAsJsonAsync<Note>("note", note).Result;
-            return ResponseParse<Note>(response); // Возвращаем новую заметку
+            if (ValidateModel<Note>(note))
+            {
+                var response = _client.PostAsJsonAsync<Note>("note", note).Result;
+                return ResponseParse<Note>(response); // Возвращаем новую заметку
+            }
+            else throw new Exception(GetErrors(result));
         }
 
         /// <summary>
@@ -133,8 +164,12 @@ namespace DigDesNote.UI.WPF
         /// <returns></returns>
         public Note UpdateNote(Note note)
         {
-            var response = _client.PutAsJsonAsync<Note>("note", note).Result;
-            return ResponseParse<Note>(response); // Возвращаем новую заметку
+            if (ValidateModel<Note>(note))
+            {
+                var response = _client.PutAsJsonAsync<Note>("note", note).Result;
+                return ResponseParse<Note>(response); // Возвращаем новую заметку
+            }
+            else throw new Exception(GetErrors(result));
         }
 
         /// <summary>
@@ -214,8 +249,12 @@ namespace DigDesNote.UI.WPF
 
         public Category CreateCategory(Category cat)
         {
-            var response = _client.PostAsJsonAsync<Category>("category", cat).Result;
-            return ResponseParse<Category>(response);
+            if (ValidateModel<Category>(cat))
+            {
+                var response = _client.PostAsJsonAsync<Category>("category", cat).Result;
+                return ResponseParse<Category>(response);
+            }
+            else throw new Exception(GetErrors(result));
         }
 
         public void DelCategory(Guid id)

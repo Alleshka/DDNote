@@ -9,6 +9,7 @@ namespace DigDesNote.Model
         public Guid _id { get; set; } // ID заметки 
 
         [Required(ErrorMessage = "Укажите название заметки ")]
+        [StringLength(45, MinimumLength = 1, ErrorMessage ="Название заметки должно быть от 1 до 45 символов")]
         public String _title { get; set; } // Заголовок заметки
 
         [Required(ErrorMessage = "Укажите содержимое заметки")]
