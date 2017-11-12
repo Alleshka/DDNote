@@ -76,7 +76,7 @@
                             <Button x:Name="BtnAddCat" Margin="100, 0, 0, 0" Click="BtnAddCat_Click">Добавить</Button>
                         </Grid>
                         <!--Добавление новой категории - Конец -->
-                        <ListBox Height="200" Width="200" x:Name="_categoryList" >
+                        <ListBox Height="250" Width="200" x:Name="_categoryList" >
                         </ListBox>
                     </StackPanel>
                 </Expander>

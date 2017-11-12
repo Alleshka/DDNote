@@ -39,16 +39,15 @@ primary key (noteId, categoryId)
 )
 
 go
--- Триггер на удаление заметок
 create trigger NoteDel
 on TNote
 instead of delete 
 as 
 begin 
 declare @id UNIQUEIDENTIFIER = (select id from deleted)
-delete TRefCategoryNote where noteId=@id -- Удаляем отношение
-delete TShare where noteId=@id -- Удаляем из списка делёжек
-delete TNote where id=@id -- удаляем саму заметку
+delete TRefCategoryNote where noteId=@id
+delete TShare where noteId=@id
+delete TNote where id=@id
 end
 
 go
@@ -58,8 +57,8 @@ instead of delete
 as 
 begin
 declare @id UNIQUEIDENTIFIER = (select id from deleted)
-delete TRefCategoryNote where categoryId=@id -- Удаляем отношение
-delete TCategory where id=@id -- Удаляем категорию
+delete TRefCategoryNote where categoryId=@id
+delete TCategory where id=@id
 end
 
 go
@@ -69,8 +68,8 @@ instead of delete
 as
 begin
 declare @id UNIQUEIDENTIFIER = (select id from deleted)
-delete TShare where userId=@id -- Удаляем все шары
-delete TNote where creator=@id -- Удаляем заметки пользователя
-delete TCategory where userId=@id -- Удаляем категории пользователя
-delete TUser where id=@id -- Удаляем самого пользователя
+delete TShare where userId=@id
+delete TNote where creator=@id
+delete TCategory where userId=@id
+delete TUser where id=@id
 end

@@ -44,6 +44,8 @@ namespace DigDesNote.UI.WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+
             _domain = ConfigurationManager.AppSettings["hostdomain"];
             _loginPath = ConfigurationManager.AppSettings["loginset"];
             try
@@ -57,7 +59,7 @@ namespace DigDesNote.UI.WPF
                 MessageBox.Show("Необходим повторный вход");
                 System.IO.File.Delete(_loginPath);
             }
-        }
+            }
 
         /// <summary>
         /// Выполняется при успешном входе в систему
@@ -335,6 +337,7 @@ namespace DigDesNote.UI.WPF
             {
                 ListBox temp = new ListBox()
                 {
+                    // Name = k._name+"boxItem",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Width = 180
                 };
@@ -350,15 +353,36 @@ namespace DigDesNote.UI.WPF
                 };
                 expander.Expanded += (o, ea) => { if (temp.ItemsSource == null) temp.ItemsSource = from note in _client.GetNotesFromCategory(k._id) select note._title; };
 
+                // Контекстное меню на элементы
                 ContextMenu menu = new ContextMenu();
                 MenuItem item1 = new MenuItem() { Header = "Удалить" }; item1.Click += (o, ea) => DelCategory(k._id);
+                MenuItem item2 = new MenuItem() { Header = "Переименовать" }; item2.Click += (o, ea) =>
+                {
+                    TextBox name = new TextBox()
+                    {
+                        Width = 180,
+                        Focusable = true,
+                        Text = expander.Header.ToString()
+                    };
+                    expander.Header = name;
+                    name.Focus();
+                    name.KeyDown += (a, b) => { if (b.Key == Key.Enter) { RenameCategory(k._id, name.Text); } };
+                };
+
                 menu.Items.Add(item1);    
+                menu.Items.Add(item2);
                 
                 expander.ContextMenu = menu;
 
                 temp.MouseDoubleClick += (o, ea) => OpenNoteInfo((from note in _client.GetNotesFromCategory(k._id) select note._id).ToList()[temp.SelectedIndex]);
                 _categoryList.Items.Add(expander);
             }
+        }
+
+        private void RenameCategory(Guid id, String newName)
+        {
+            _client.RenameCategory(id, newName);
+            UpdateCategories();
         }
 
         // После перелогина очищаем форму

@@ -349,5 +349,13 @@ namespace DigDesNote.UI.WPF
             _alluserNotes.RemoveAll(x => x._id == note); // Удаляем элементы из коллекции
             return answ;
         }
+
+        public Category RenameCategory(Guid id, String name)
+        {
+            var response = _client.PutAsJsonAsync<String>($"category/{id}", name).Result;
+            Category tmp = ResponseParse<Category>(response);
+            _categories.RemoveAll(x => x._id == id); _categories.Add(tmp);
+            return tmp;
+        }
     }
 }

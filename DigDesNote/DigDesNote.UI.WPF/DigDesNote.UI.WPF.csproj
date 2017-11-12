@@ -99,6 +99,9 @@
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Code\ServiceClient.cs" />
+    <Compile Include="RenameCatWindow.xaml.cs">
+      <DependentUpon>RenameCatWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserRegisterControl.xaml.cs">
       <DependentUpon>UserRegisterControl.xaml</DependentUpon>
     </Compile>
@@ -143,6 +146,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RegisterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RenameCatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
