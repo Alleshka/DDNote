@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="AddShareList" Height="240" Width="300" ResizeMode="NoResize" Closing="Window_Closing">
+        Title="Поделиться заметкой" Height="240" Width="300" ResizeMode="NoResize" Closing="Window_Closing">
     
     <Grid Margin="0,0,0,0">
         <ListBox Margin="0, 15, 0, 0" x:Name="_shareList" Height="150" VerticalAlignment="Top">

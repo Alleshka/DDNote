@@ -73,6 +73,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddCategoryW.xaml.cs">
+      <DependentUpon>AddCategoryW.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddCategoryWindow.xaml.cs">
       <DependentUpon>AddCategoryWindow.xaml</DependentUpon>
     </Compile>
@@ -99,6 +102,10 @@
     <Compile Include="UserRegisterControl.xaml.cs">
       <DependentUpon>UserRegisterControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="AddCategoryW.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddCategoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

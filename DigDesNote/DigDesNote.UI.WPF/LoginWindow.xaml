@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="147.703" Width="200" ResizeMode="NoResize">
+        Title="Вход" Height="147.703" Width="200" ResizeMode="NoResize">
     <Grid>
         <WrapPanel Margin="0, 10, 0, 0" Height="25" VerticalAlignment="Top">
             <TextBlock HorizontalAlignment="Left" Width="55">Логин: </TextBlock>

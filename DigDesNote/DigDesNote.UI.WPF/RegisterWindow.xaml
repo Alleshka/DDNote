@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="RegisterWindow" Height="130" Width="220" ResizeMode="NoResize">
+        Title="Регистрация" Height="130" Width="220" ResizeMode="NoResize">
+    
     <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0, 10, 0, 0">
         <local:UserRegisterControl x:Name="_userControl">
 

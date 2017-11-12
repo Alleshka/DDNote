@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="370" Width="430" FontWeight="Medium" Loaded="Window_Loaded" Closing="Window_Closing" ResizeMode="NoResize">
+        Title="DidDesNote" Height="370" Width="430" FontWeight="Medium" Loaded="Window_Loaded" Closing="Window_Closing" ResizeMode="NoResize">
     <Grid>
         <!-- Область меню - Старт -->
         <Menu Height="20" VerticalAlignment="Top">
@@ -76,7 +76,7 @@
                             <Button x:Name="BtnAddCat" Margin="100, 0, 0, 0" Click="BtnAddCat_Click">Добавить</Button>
                         </Grid>
                         <!--Добавление новой категории - Конец -->
-                        <ListBox Height="100" Width="200" x:Name="_categoryList" >
+                        <ListBox Height="200" Width="200" x:Name="_categoryList" >
                         </ListBox>
                     </StackPanel>
                 </Expander>

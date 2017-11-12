@@ -79,7 +79,7 @@ namespace DigDesNote.UI.WPF
         // Двойной клик по категориям
         private void _categoryList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            AddCategoryWindow adc = new AddCategoryWindow(_client, _note._creator, _noteId);
+            AddCategoryW adc = new AddCategoryW(_client, _note._creator, _noteId);
             if (adc.ShowDialog() == true)
             {
                 _categoryList.ItemsSource = from cat in _client.GetNoteCategories(_noteId) select cat._name;

@@ -158,6 +158,7 @@ namespace DigDesNote.UI.WPF
                     _userId = _curId
                 });
                 _categoryList.Items.Clear();
+                _newCatName.Text = "";
                 UpdateCategories(); // Обновляем список категорий
             }
             catch (Exception ex)
@@ -274,7 +275,7 @@ namespace DigDesNote.UI.WPF
 
         private void CategoryNotesItem_Click(object sender, RoutedEventArgs e)
         {
-            AddCategoryWindow addCategoryWindow = new AddCategoryWindow(_client, _curId, _client.GetPersonalNotes(_curId).ToList()[_personalNotesList.SelectedIndex]._id);
+            AddCategoryW addCategoryWindow = new AddCategoryW(_client, _curId, _client.GetPersonalNotes(_curId).ToList()[_personalNotesList.SelectedIndex]._id);
             if (addCategoryWindow.ShowDialog()==true)
             {
                 UpdateCategories();
@@ -334,7 +335,6 @@ namespace DigDesNote.UI.WPF
             {
                 ListBox temp = new ListBox()
                 {
-                    ItemsSource = from note in _client.GetNotesFromCategory(k._id) select note._title,
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Width = 180
                 };
@@ -342,17 +342,18 @@ namespace DigDesNote.UI.WPF
                 // Создаём экспандер с именем категории
                 Expander expander = new Expander()
                 {
-                    Header = k._name + " (Заметок: " + temp.Items.Count + ")",
+                    Header = k._name, // + " (Заметок: " + temp.Items.Count + ")",
                     // В листбокс пихаем заголовки заметок из этой категории
                     Content = temp,
                     Width = 180,
                     HorizontalAlignment = HorizontalAlignment.Left
                 };
+                expander.Expanded += (o, ea) => { if (temp.ItemsSource == null) temp.ItemsSource = from note in _client.GetNotesFromCategory(k._id) select note._title; };
 
                 ContextMenu menu = new ContextMenu();
                 MenuItem item1 = new MenuItem() { Header = "Удалить" }; item1.Click += (o, ea) => DelCategory(k._id);
-
-                menu.Items.Add(item1);
+                menu.Items.Add(item1);    
+                
                 expander.ContextMenu = menu;
 
                 temp.MouseDoubleClick += (o, ea) => OpenNoteInfo((from note in _client.GetNotesFromCategory(k._id) select note._id).ToList()[temp.SelectedIndex]);
