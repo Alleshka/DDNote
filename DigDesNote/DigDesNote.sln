@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.Logger", "DigDes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.UI.WPF", "DigDesNote.UI.WPF\DigDesNote.UI.WPF.csproj", "{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigDesNote.UI.WPF2Binding", "DigDesNote.UI.WPF2Binding\DigDesNote.UI.WPF2Binding.csproj", "{677C7C6B-6170-4030-8977-78DAD2BCAC3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0823166D-1A0B-4A6B-8C9A-446DADB7FD67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{677C7C6B-6170-4030-8977-78DAD2BCAC3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{677C7C6B-6170-4030-8977-78DAD2BCAC3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{677C7C6B-6170-4030-8977-78DAD2BCAC3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{677C7C6B-6170-4030-8977-78DAD2BCAC3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

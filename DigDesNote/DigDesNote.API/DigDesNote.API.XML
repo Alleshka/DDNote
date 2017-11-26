@@ -143,6 +143,20 @@
             <param name="id">ID пользователя</param>
             <returns></returns>
         </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.GetPersonalNotes(System.Guid)">
+            <summary>
+            Получить основную информацию о всех заметках пользователя
+            </summary>
+            <param name="id">ID пользователя</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.GetSharesNotes(System.Guid)">
+            <summary>
+            Получить основную информацию о всех заметках пользователя
+            </summary>
+            <param name="id">ID пользователя</param>
+            <returns></returns>
+        </member>
         <member name="M:DigDesNote.API.Controllers.UserController.CreateUser(DigDesNote.Model.User)">
             <summary>
             Создание нового пользователя

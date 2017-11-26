@@ -5,7 +5,7 @@ using DigDesNote.Model;
 using DigDesNote.DataLayer;
 using DigDesNote.DataLayer.Sql;
 using System.ComponentModel.DataAnnotations;
-using DigDesNote.API.Filter;
+using System.Linq;
 
 namespace DigDesNote.API.Controllers
 {
@@ -93,6 +93,34 @@ namespace DigDesNote.API.Controllers
             Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
             if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
             return _userRepository.GetFullUser(id)._notes;
+        }
+
+        /// <summary>
+        /// Получить основную информацию о всех заметках пользователя
+        /// </summary>
+        /// <param name="id">ID пользователя</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/user/{id}/notes/personal")]
+        public IEnumerable<Note> GetPersonalNotes(Guid id)
+        {
+            Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
+            if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
+            return _userRepository.GetFullUser(id)._notes.Where(x=>x._creator == id);
+        }
+
+        /// <summary>
+        /// Получить основную информацию о всех заметках пользователя
+        /// </summary>
+        /// <param name="id">ID пользователя</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/user/{id}/notes/shares")]
+        public IEnumerable<Note> GetSharesNotes(Guid id)
+        {
+            Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
+            if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
+            return _userRepository.GetFullUser(id)._notes.Where(x => x._creator != id);
         }
 
         /// <summary>

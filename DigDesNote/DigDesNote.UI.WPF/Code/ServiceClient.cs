@@ -32,7 +32,6 @@ namespace DigDesNote.UI.WPF
                 BaseAddress = new System.Uri(_connectionString)
             };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.GetCookies().Add(new CookieHeaderValue("text", "rrwr"));
         }
         private T ResponseParse<T>(HttpResponseMessage response)
         {
