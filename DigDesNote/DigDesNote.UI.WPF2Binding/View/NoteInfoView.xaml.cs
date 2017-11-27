@@ -3,11 +3,11 @@
 namespace DigDesNote.UI.WPF2Binding.View
 {
     /// <summary>
-    /// Логика взаимодействия для RegisterView.xaml
+    /// Логика взаимодействия для NoteInfoView.xaml
     /// </summary>
-    public partial class RegisterView : UserControl
+    public partial class NoteInfoView : UserControl
     {
-        public RegisterView()
+        public NoteInfoView()
         {
             InitializeComponent();
         }

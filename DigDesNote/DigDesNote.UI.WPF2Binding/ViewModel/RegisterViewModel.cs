@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DigDesNote.UI.WPF2Binding.Code;
 using System.Windows.Controls;
 using DigDesNote.Model;

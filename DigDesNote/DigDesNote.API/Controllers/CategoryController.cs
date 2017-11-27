@@ -5,7 +5,6 @@ using DigDesNote.Model;
 using DigDesNote.DataLayer;
 using DigDesNote.DataLayer.Sql;
 using System.ComponentModel.DataAnnotations;
-using System.Configuration;
 
 namespace DigDesNote.API.Controllers
 {

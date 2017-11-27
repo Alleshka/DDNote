@@ -1,0 +1,32 @@
+﻿<UserControl
+    x:Class="DigDesNote.UI.WPF2Binding.View.NoteInfoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
+        xmlns:note="clr-namespace:DigDesNote.UI.WPF2Binding.ViewModel"
+        mc:Ignorable="d"
+        Height="300" Width="300">
+    <StackPanel>
+        <TextBox Text="{Binding Title1, Mode=TwoWay}"></TextBox>
+        <TextBox Text="{Binding Content, Mode=TwoWay}"></TextBox>
+        <TextBox DataContext="{Binding Creator}" Text="{Binding Path=_login}"></TextBox>
+        <TextBox Text="{Binding Created, Mode=OneTime}"></TextBox>
+        <TextBox Text="{Binding Updated, Mode=TwoWay}"></TextBox>
+        <ListBox ItemsSource="{Binding Categories}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=_name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox ItemsSource="{Binding Shares}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=_login}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+</UserControl>

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using DigDesNote.UI.WPF2Binding.Command;
 using DigDesNote.UI.WPF2Binding.Code;
 using System.Windows.Controls;
 using DigDesNote.Model;
+using AGLibrary.Files;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {
@@ -69,6 +65,9 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                 };
 
                 Guid id = client.Login(user);
+
+                FileWork.SaveDataJson<Guid>(id, "adm//curUser.json");
+
                 Close(null);
                 //CloseCommand.Execute(null);
             }
@@ -83,7 +82,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             {
                 Title = "Регистрация"
             };
-            Show(register);
+            ShowDialog(register);
         }
     }
 }

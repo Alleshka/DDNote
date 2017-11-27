@@ -6,14 +6,21 @@
              xmlns:viewmodel="clr-namespace:DigDesNote.UI.WPF2Binding.ViewModel"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+
+        <DataTemplate DataType="{x:Type viewmodel:NoteInfoViewModel}">
+            <view:NoteInfoView HorizontalAlignment="Stretch" />
+        </DataTemplate>
         
         <DataTemplate DataType="{x:Type viewmodel:LoginViewModel}">
             <view:LoginView HorizontalAlignment="Stretch" />
         </DataTemplate>
 
+
         <DataTemplate DataType="{x:Type viewmodel:RegisterViewModel}">
             <view:RegisterView HorizontalAlignment="Stretch" />
         </DataTemplate>
+
+
 
     </Application.Resources>
 </Application>

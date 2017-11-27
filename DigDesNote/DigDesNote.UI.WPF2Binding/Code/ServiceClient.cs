@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DigDesNote.Model;
-using System.ComponentModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using DigDesNote.UI.WPF2Binding.Code;
+using DigDesNote.UI.WPF2Binding.Model;
 
 namespace DigDesNote.UI.WPF2Binding.Code
 {
     public class ServiceClient
     {
         private HttpClient _client;
-
         public ServiceClient(String _connectionString)
         {
             _client = new HttpClient()
@@ -52,7 +51,12 @@ namespace DigDesNote.UI.WPF2Binding.Code
         }
         #endregion
 
+        public void StartProgram()
+        {
+            if (!Directory.Exists("adm")) Directory.CreateDirectory("adm");
+        }
 
+        #region users
         /// <summary>
         /// Вход пользователя
         /// </summary>
@@ -70,6 +74,11 @@ namespace DigDesNote.UI.WPF2Binding.Code
             return userGui;
         }
 
+        /// <summary>
+        /// Регистрация пользователя
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public User RegisterUser(User user)
         {
             if (ValidateModel<User>(user))
@@ -83,5 +92,61 @@ namespace DigDesNote.UI.WPF2Binding.Code
                 throw new Exception(GetErrors(result));
             }
         }
+
+        public User GetBasicUserInfo(Guid id)
+        {
+            var response = _client.GetAsync($"user/{id}").Result;
+            User _curUser = ResponseParse<User>(response);
+
+            return _curUser;
+        }
+        #endregion
+
+        #region notes
+        public List<NoteModel> GetPersonalNotes(Guid id)
+        {
+            var response = _client.GetAsync($"user/{id}/notes/personal").Result;
+            List<NoteModel> notes = ResponseParse<IEnumerable<NoteModel>>(response).OrderBy(x => x._id).ToList();
+            return notes;
+        }
+        /// <summary>
+        /// Получить категории из заметки
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <summary>
+        /// Получить информацию о категориях из заметки
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>Synchro
+        public List<Category> GetNoteCategories(Guid id)
+        {
+            var response = _client.GetAsync($"note/{id}/categories").Result;
+            var _categories = ResponseParse<IEnumerable<Category>>(response).OrderBy(x => x._id).ToList(); // Вернуть категории из заметки
+
+            return _categories;
+        }
+        /// <summary>
+        /// Получить список пользователей, которым доступна заметка
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IEnumerable<User> GetNoteShares(Guid id)
+        {
+            var response = _client.GetAsync($"note/{id}/shares").Result;
+            var guids = ResponseParse<IEnumerable<Guid>>(response).OrderBy(x => x);
+            List<User> _shares = new List<User>();
+            foreach (var k in guids) _shares.Add(GetBasicUserInfo(k));
+            return _shares;
+        }
+        #endregion
+
+        #region categories
+
+        #endregion
+
+        #region shares
+        #endregion
+
     }
 }

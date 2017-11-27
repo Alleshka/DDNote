@@ -4,9 +4,50 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.ViewModel"
+        xmlns:mainview="clr-namespace:DigDesNote.UI.WPF2Binding.ViewModel"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="556.081">
     <Grid>
-        <!--<Button Command="{Binding CreateLoginWindow}">Логин</Button>-->
+        <!-- User Info -->
+        <GroupBox x:Name="UserBoxInfo" Header="Информация о пользователе:" BorderBrush="Black" Margin="10,10,315,220" MinWidth="100" MaxWidth="250" MinHeight="50" MaxHeight="100" DataContext="{Binding UserViewModel, Mode=TwoWay}">
+            <Grid ShowGridLines="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.25*"/>
+                    <ColumnDefinition Width="0.75*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.65*"/>
+                    <RowDefinition Height="0.35*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0"  Grid.Row="0" HorizontalAlignment="Stretch">ID:</TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Text="{Binding UserId, Mode=OneWay}" TextWrapping="Wrap"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch">Login:</TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Text="{Binding Login, Mode=OneWay}"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Personal Notes -->
+        <Expander x:Name="PersonalExpand" Header="Личные заметки" Margin="10,105,315,120" DataContext="{Binding Path=PersonalNotesView, Mode=TwoWay}">
+            <StackPanel>
+                <ListBox ItemsSource="{Binding Path=PersonalNotes, Mode=TwoWay}" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding OpenNoteInfoCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Информация о заметке" Command="{Binding OpenNoteInfoCommand}"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path = _title}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Expander>
     </Grid>
 </Window>

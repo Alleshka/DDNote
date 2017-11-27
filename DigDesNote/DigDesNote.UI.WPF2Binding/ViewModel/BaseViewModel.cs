@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using DigDesNote.UI.WPF2Binding.Command;
 using System.ComponentModel;
 using System.Windows;
-
 using DigDesNote.UI.WPF2Binding.View;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
@@ -53,7 +47,18 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             };
 
             viewModel._view.Closed += (sender, e) => Closed();
-            viewModel._view.ShowDialog();
+            viewModel._view.Show();
+        }
+
+        protected bool ShowDialog(BaseViewModel viewModel)
+        {
+            viewModel._view = new BaseView
+            {
+                DataContext = viewModel
+            };
+
+            viewModel._view.Closed += (sender, e) => Closed();
+            return (bool)viewModel._view.ShowDialog();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
