@@ -100,6 +100,23 @@ namespace DigDesNote.UI.WPF2Binding.Code
 
             return _curUser;
         }
+
+        /// <summary>
+        /// Поличить информацию о пользователе по логину
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
+        public User GetBasicUserInfo(String login)
+        {
+            var response = _client.GetAsync($"user/login/{login}").Result;
+            return ResponseParse<User>(response);
+        }
+
+        public IEnumerable<NoteCategoriesModel> GetUserCategories(Guid id)
+        {
+            var response = _client.GetAsync($"user/{id}/categories").Result;
+            return ResponseParse<IEnumerable<NoteCategoriesModel>>(response).ToList();
+        }
         #endregion
 
         #region notes
@@ -109,6 +126,7 @@ namespace DigDesNote.UI.WPF2Binding.Code
             List<NoteModel> notes = ResponseParse<IEnumerable<NoteModel>>(response).OrderBy(x => x._id).ToList();
             return notes;
         }
+
         /// <summary>
         /// Получить категории из заметки
         /// </summary>
@@ -119,10 +137,10 @@ namespace DigDesNote.UI.WPF2Binding.Code
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>Synchro
-        public List<Category> GetNoteCategories(Guid id)
+        public List<NoteCategoriesModel> GetNoteCategories(Guid id)
         {
             var response = _client.GetAsync($"note/{id}/categories").Result;
-            var _categories = ResponseParse<IEnumerable<Category>>(response).OrderBy(x => x._id).ToList(); // Вернуть категории из заметки
+            var _categories = ResponseParse<IEnumerable<NoteCategoriesModel>>(response).OrderBy(x => x._id).ToList(); // Вернуть категории из заметки
 
             return _categories;
         }
@@ -138,6 +156,51 @@ namespace DigDesNote.UI.WPF2Binding.Code
             List<User> _shares = new List<User>();
             foreach (var k in guids) _shares.Add(GetBasicUserInfo(k));
             return _shares;
+        }
+        public NoteModel UpdateNote(NoteModel note)
+        {
+            if (ValidateModel<Note>(note))
+            {
+                var response = _client.PutAsJsonAsync<NoteModel>("note", note).Result;
+                note = ResponseParse<NoteModel>(response); // Возвращаем новую заметку
+                return note;
+            }
+            else throw new Exception(GetErrors(result));
+        }
+
+        public String AddNoteToCategory(Guid noteId, Guid categoryId)
+        {
+            var response = _client.PostAsync($"note/{noteId}/addcategory/{categoryId}", null).Result;
+            return ResponseParse<String>(response);
+        }
+
+        public String DelNoteToCategory(Guid noteId, Guid categoryId)
+        {
+            var response = _client.PostAsync($"note/{noteId}/delcategory/{categoryId}", null).Result;
+            return ResponseParse<String>(response);
+        }
+
+        /// <summary>
+        /// Расшарить заметку пользователю
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <param name="noteId">ID заметки</param>
+        public String ShareNoteToUser(String login, Guid noteId)
+        {
+            var response = _client.PostAsync($"note/{noteId}/share/{GetBasicUserInfo(login)._id}", null).Result;
+            return ResponseParse<String>(response);
+        }
+
+        /// <summary>
+        /// Убрать шару от пользователя
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="noteId"></param>
+        public String UnShareNoteToUser(Guid userId, Guid noteId)
+        {
+            var response = _client.PostAsync($"note/{noteId}/unshare/{userId}", null).Result;
+
+            return ResponseParse<String>(response);
         }
         #endregion
 

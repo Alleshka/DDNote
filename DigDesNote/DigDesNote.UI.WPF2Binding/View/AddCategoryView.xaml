@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="DigDesNote.UI.WPF2Binding.View.AddCategoryView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
+        mc:Ignorable="d">
+    <StackPanel>
+        <ListBox ItemsSource="{Binding UserCategories, Mode=TwoWay}" SelectedItem="{Binding SelectedCategory}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding Path = _name}" IsChecked="{Binding Path=IsFromCategory, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="">
+                                <i:InvokeCommandAction Command="{Binding OpenNoteInfoCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </CheckBox>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+</UserControl>

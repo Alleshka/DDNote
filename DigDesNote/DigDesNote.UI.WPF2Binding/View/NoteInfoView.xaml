@@ -9,24 +9,15 @@
         mc:Ignorable="d"
         Height="300" Width="300">
     <StackPanel>
-        <TextBox Text="{Binding Title1, Mode=TwoWay}"></TextBox>
-        <TextBox Text="{Binding Content, Mode=TwoWay}"></TextBox>
-        <TextBox DataContext="{Binding Creator}" Text="{Binding Path=_login}"></TextBox>
-        <TextBox Text="{Binding Created, Mode=OneTime}"></TextBox>
-        <TextBox Text="{Binding Updated, Mode=TwoWay}"></TextBox>
-        <ListBox ItemsSource="{Binding Categories}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=_name}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <ListBox ItemsSource="{Binding Shares}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=_login}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <StackPanel DataContext="{Binding CurNoteClone, Mode=TwoWay}">
+            <TextBox Text="{Binding Path=_title}"/>
+            <TextBox Text="{Binding Path=_content}"/>
+            <TextBlock Text="{Binding Path=_created}"/>
+            <TextBox Text="{Binding Path=_updated}"/>
+        </StackPanel>
+        <Button Content="Сохранить" Command="{Binding UpdateNoteCommand}"/>
+        <Button Content="Отмена" Command="{Binding CanselCommand}"/>
+        <Button Content="Категории" Command="{Binding OpenViewCategoryCommand}"/>
+        <Button Content="Пользователи" Command="{Binding ViewShareListCommand}"/>
     </StackPanel>
 </UserControl>

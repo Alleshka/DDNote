@@ -21,6 +21,13 @@
         </DataTemplate>
 
 
+        <DataTemplate DataType="{x:Type viewmodel:AddCategoryViewModel}">
+            <view:AddCategoryView HorizontalAlignment="Stretch" />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodel:SharesListViewModel}">
+            <view:ShareList HorizontalAlignment="Stretch" />
+        </DataTemplate>
 
     </Application.Resources>
 </Application>
