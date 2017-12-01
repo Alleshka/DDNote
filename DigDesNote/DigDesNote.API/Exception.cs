@@ -5,30 +5,60 @@ using System.Web.Http;
 
 namespace DigDesNote.API
 {
+    /// <summary>
+    /// Исключение, если объект не найден
+    /// </summary>
     public class NotFoundException : Exception
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public NotFoundException(string message) : base(message)
         {
 
         }
     }
+
+    /// <summary>
+    /// Исключение, если модель не валидна
+    /// </summary>
     public class ModelNotValid : Exception
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public ModelNotValid(string message) : base(message)
         {
 
         }
     }
+
+    /// <summary>
+    /// Исключение, если нет доступа к БД
+    /// </summary>
     public class NoConnectionDB : Exception
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
         public NoConnectionDB(String message) : base(message)
         {
 
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class CustomExceptionAtribute : ExceptionFilterAttribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
             if (actionExecutedContext != null)

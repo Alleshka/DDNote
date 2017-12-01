@@ -126,7 +126,6 @@
     <Compile Include="Controllers\NoteController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Exception.cs" />
-    <Compile Include="Filter\CustomAuthenticationAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -150,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Filter\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

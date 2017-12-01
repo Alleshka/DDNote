@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="DigDesNote.UI.WPF2Binding.View.CreateNoteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
+             mc:Ignorable="d" Height="330" Width="365">
+    <Grid>
+        <StackPanel>
+                <!--Заголовок-->
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">Заголовок:</TextBlock>
+                    <TextBox Text="{Binding TitleNote, Mode=TwoWay}" Height="20" Width="235" Margin="90,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MaxLength="45"/>
+                </Grid>
+
+                <Grid Margin="0, 20, 0, 0">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">Контент:</TextBlock>
+                    <TextBox Text="{Binding ContentNot, Mode=TwoWay}" Height="200" Width="235" Margin="90,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" AcceptsReturn="True" SpellCheck.IsEnabled="True" Language="ru-ru" TextWrapping="Wrap" AcceptsTab="True"/>
+                </Grid>
+            </StackPanel>
+        <Button Content="Сохранить" Command="{Binding CreateNewNoteCommand}" Margin="90,250,0,0" Width="235" Height="40" HorizontalAlignment="Left"/>
+    </Grid>
+</UserControl>

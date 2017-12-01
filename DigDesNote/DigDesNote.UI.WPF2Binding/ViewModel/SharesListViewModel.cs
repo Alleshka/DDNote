@@ -1,35 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using DigDesNote.UI.WPF2Binding.Model;
+﻿using System.Windows.Input;
 using DigDesNote.UI.WPF2Binding.Command;
 using DigDesNote.UI.WPF2Binding.Code;
+using DigDesNote.UI.WPF2Binding.Model;
+using System.Configuration;
+using System.Collections.ObjectModel;
 using DigDesNote.Model;
-using System.Windows.Input;
-
+using System;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {
     public class SharesListViewModel : BaseViewModel
     {
-        private ObservableCollection<User> _userList;
-        private String _login;
-
         ServiceClient _client;
-        Guid _noteId;
+        NoteModel _note;
 
-        private User _selectedUser;
-
-        public SharesListViewModel(Guid noteId, ServiceClient client)
-        {
-            _client = client;
-            _noteId = noteId;
-            _userList = new ObservableCollection<User>(_client.GetNoteShares(noteId));
-        }
-
+        // Список пользователей, которым доступно
+        private ObservableCollection<User> _userList;
         public ObservableCollection<User> UserList
         {
             get => _userList;
@@ -40,6 +26,8 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             }
         }
 
+        // Логин создателя
+        private String _login;
         public String Login
         {
             get => _login;
@@ -50,6 +38,10 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             }
         }
 
+        /// <summary>
+        /// Выбранный пользователь
+        /// </summary>
+        private User _selectedUser;
         public User SelectedUser
         {
             get => _selectedUser;
@@ -60,35 +52,44 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             }
         }
 
+        public SharesListViewModel(NoteModel note)
+        {
+            _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
+            _note = note;
+            _userList = new ObservableCollection<User>(_client.GetNoteShares(_note._id));
+        }
+
+        /// <summary>
+        /// Добавить юзера в шары
+        /// </summary>
         public ICommand AddUserCommand
         {
-            get => new BaseCommand(AddUser);
+            get => new BaseCommand((object par) =>
+            {
+                try
+                {
+                    _client.ShareNoteToUser(Login, _note._id);
+                    _userList.Add(_client.GetBasicUserInfo(Login));
+                    Login = "";
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
+            });
         }
 
-        public void AddUser(object par)
-        {
-            try
-            {
-                _client.ShareNoteToUser(Login, _noteId);
-                _userList.Add(_client.GetBasicUserInfo(Login));
-                Login = "";
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.Message);
-            }
-        }
-
+        /// <summary>
+        /// Удалить пользователя из шар
+        /// </summary>
         public ICommand DelUserCommand
         {
-            get => new BaseCommand(DelUser);
-        }
-
-        public void DelUser(object par)
-        {
-            _client.UnShareNoteToUser(SelectedUser._id, _noteId);
-            _userList.Remove(SelectedUser);
-            Login = "";
+            get => new BaseCommand((object par)=>
+            {
+                _client.UnShareNoteToUser(SelectedUser._id, _note._id);
+                _userList.Remove(SelectedUser);
+                Login = "";
+            });
         }
     }
 }

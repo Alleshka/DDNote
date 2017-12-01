@@ -11,7 +11,7 @@ namespace DigDesNote.UI.WPF2Binding
         public MainWindow()
         {
             InitializeComponent();
-            MainWindowModel model = new MainWindowModel();
+            MainWindowModel model = new MainWindowModel(this);
             this.DataContext = model;
         }
     }

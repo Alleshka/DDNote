@@ -29,5 +29,13 @@
             <view:ShareList HorizontalAlignment="Stretch" />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewmodel:CreateNoteViewModel}">
+            <view:CreateNoteView HorizontalAlignment="Stretch" />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodel:NoteFromCategoryView}">
+            <view:NotesFromView HorizontalAlignment="Stretch" />
+        </DataTemplate>
+
     </Application.Resources>
 </Application>

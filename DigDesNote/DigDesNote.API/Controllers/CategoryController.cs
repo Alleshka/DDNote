@@ -18,8 +18,11 @@ namespace DigDesNote.API.Controllers
         private ICategoriesRepository _categoriesRepository;
 
         private List<ValidationResult> result;
-        private ValidationContext context;
+        // private ValidationContext context;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CategoryController()
         {
             _categoriesRepository = new CategoryRepository(_connectionString);

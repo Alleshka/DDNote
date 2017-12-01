@@ -3,12 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="400">
-    <StackPanel>
-        <TextBox Text="{Binding Login, Mode=TwoWay}" TextAlignment="Center"></TextBox>
-        <PasswordBox x:Name="_password"></PasswordBox>
-        <Button Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=_password}">Вход</Button>
-        <Button Command="{Binding RegisterCommand}">Регистрация</Button>
-    </StackPanel>
+             mc:Ignorable="d" Width="480" Height="228.8">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="Логин: " VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Login, Mode=TwoWay}" TextAlignment="Center" Width="200" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="Пароль: " VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+        <PasswordBox Grid.Column="1" Grid.Row="1" Width="200" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="_password" HorizontalContentAlignment="Center"/>
+
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="Запомнить: " VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+        <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding Status}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+        <Button Grid.Column="0" Grid.Row="3" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=_password}">Вход</Button>
+        <Button Grid.Column="1" Grid.Row="3" Command="{Binding RegisterCommand}">Регистрация</Button>
+    </Grid>
 </UserControl>

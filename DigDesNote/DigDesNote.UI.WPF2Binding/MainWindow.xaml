@@ -3,51 +3,146 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.ViewModel"
-        xmlns:mainview="clr-namespace:DigDesNote.UI.WPF2Binding.ViewModel"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="556.081">
-    <Grid>
-        <!-- User Info -->
-        <GroupBox x:Name="UserBoxInfo" Header="Информация о пользователе:" BorderBrush="Black" Margin="10,10,315,220" MinWidth="100" MaxWidth="250" MinHeight="50" MaxHeight="100" DataContext="{Binding UserViewModel, Mode=TwoWay}">
-            <Grid ShowGridLines="False">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.25*"/>
-                    <ColumnDefinition Width="0.75*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0.65*"/>
-                    <RowDefinition Height="0.35*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0"  Grid.Row="0" HorizontalAlignment="Stretch">ID:</TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Text="{Binding UserId, Mode=OneWay}" TextWrapping="Wrap"/>
-                <TextBlock Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch">Login:</TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Text="{Binding Login, Mode=OneWay}"/>
-            </Grid>
-        </GroupBox>
+        Title="MainWindow" Height="451.676" Width="765.299">
+    <!--Триггер закрытия окна -->
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClosedProgramm}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
-        <!-- Personal Notes -->
-        <Expander x:Name="PersonalExpand" Header="Личные заметки" Margin="10,105,315,120" DataContext="{Binding Path=PersonalNotesView, Mode=TwoWay}">
-            <StackPanel>
-                <ListBox ItemsSource="{Binding Path=PersonalNotes, Mode=TwoWay}" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!-- Menu -->
+        <Menu Grid.Row="0">
+            <MenuItem Header="Пользователь">
+                <MenuItem Header="Выход из УЗ" Command="{Binding LogOut}"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- UserInfof -->
+        <TextBlock Grid.Row="1" Text="{Binding UserViewModel.UserId, Mode=OneWay}" TextWrapping="Wrap" HorizontalAlignment="Left">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Копировать" Command="{Binding UserViewModel.CopyLogin}"></MenuItem>
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+        </TextBlock>
+        <TextBlock Grid.Row="1" HorizontalAlignment="Right" Text="{Binding UserViewModel.Login}"/>
+
+        <!-- WorkPanel -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Expander Header="Категории" Grid.Column="0" VerticalAlignment="Top" Width="Auto" DataContext="{Binding Categories, Mode=TwoWay}" Height="363" Grid.ColumnSpan="2" Margin="0,0,252.6,0">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Expanded">
+                        <i:InvokeCommandAction Command="{Binding LoadCategoriesCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <StackPanel>
+                    <ListBox ItemsSource="{Binding UserCategories}" SelectedItem="{Binding SelectedCategory}" Height="285" Margin="0,0,0.2,0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=_name, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Список заметок в категории"  Command="{Binding OpenNoteList}"/>
+                                <MenuItem Header="Обновить" Command="{Binding LoadCategoriesCommand}"/>
+                                <MenuItem Header="Удалить" Command="{Binding DeleteCategoryCommand}"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                    <TextBox Text="{Binding NewNameCat, Mode=TwoWay}" Height="35"/>
+                    <Button Command="{Binding CreateCategoryCommand}" Content="Добавить"/>
+
+                </StackPanel>
+            </Expander>
+
+            <GridSplitter Width="5" Grid.Column="0"></GridSplitter>
+
+
+
+            <Expander Header="Личные заметки" Grid.Column="1" VerticalAlignment="Stretch" Width="Auto" DataContext="{Binding Path=PersonalNotesView, Mode=TwoWay}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Expanded">
+                        <i:InvokeCommandAction Command="{Binding LoadPersonalNotesCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <ListBox ItemsSource="{Binding Path=PersonalNotes, Mode=TwoWay}" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" Height="Auto">
+                    <!-- ListBox Trigger - Start -->
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDoubleClick">
                             <i:InvokeCommandAction Command="{Binding OpenNoteInfoCommand}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
+                    <!-- ListBox Trigger - End -->
+
+                    <!-- ListBox Menu - Start -->
                     <ListBox.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="Добавить заметку" Command="{Binding CreateNoteCommand}"/>
                             <MenuItem Header="Информация о заметке" Command="{Binding OpenNoteInfoCommand}"/>
+                            <MenuItem Header="Категории" Command="{Binding OpenViewCategoryCommand}" CommandParameter="{Binding SelectedNote}"/>
+                            <MenuItem Header="Обновить" Command="{Binding LoadPersonalNotesCommand}"/>
+                            <MenuItem Header="Поделиться/Отписать" Command="{Binding ViewShareListCommand}" CommandParameter="{Binding SelectedNote}"/>
+                            <MenuItem Header="Удалить" Command="{Binding DeleteNoteCommand}"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
+                    <!-- ListBox Menu - End -->
+
+                    <!-- ListBox Template -->
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path = _title}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+                    <!-- ListBox Template -->
+
                 </ListBox>
-            </StackPanel>
-        </Expander>
+            </Expander>
+
+            <GridSplitter Width="5" Grid.Column="1"></GridSplitter>
+
+            <Expander Grid.Column="2" Header="Расшаренные заметки" DataContext="{Binding Path=SharesNotesView}">
+                <StackPanel>
+                    <ListBox ItemsSource="{Binding SharesNotes}" SelectedItem="{Binding SelectedNote}" Height="346" Margin="0,0,0.2,0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Path=ViewTitle, Mode=OneWay}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Информация о заметке" Command="{Binding OpenNoteInfoCommand}" CommandParameter="{Binding SelectedNote}"/>
+                                <MenuItem Header="Обновить" Command="{Binding LoadSharesNotesCommand}"/>
+                                <MenuItem Header="Отписаться" Command="{Binding UnSubscribeCommand}"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </StackPanel>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Expanded">
+                        <i:InvokeCommandAction Command="{Binding LoadSharesNotesCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Expander>
+        </Grid>
     </Grid>
 </Window>

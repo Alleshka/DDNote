@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using DigDesNote.UI.WPF2Binding.Code;
 using DigDesNote.UI.WPF2Binding.Model;
 
 namespace DigDesNote.UI.WPF2Binding.Code
@@ -23,7 +22,6 @@ namespace DigDesNote.UI.WPF2Binding.Code
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        #region validate
         private List<ValidationResult> result;
         private ValidationContext context;
 
@@ -49,14 +47,13 @@ namespace DigDesNote.UI.WPF2Binding.Code
             if (Validator.TryValidateObject(model, context, result)) return true;
             else return false;
         }
-        #endregion
+
 
         public void StartProgram()
         {
             if (!Directory.Exists("adm")) Directory.CreateDirectory("adm");
         }
 
-        #region users
         /// <summary>
         /// Вход пользователя
         /// </summary>
@@ -117,12 +114,22 @@ namespace DigDesNote.UI.WPF2Binding.Code
             var response = _client.GetAsync($"user/{id}/categories").Result;
             return ResponseParse<IEnumerable<NoteCategoriesModel>>(response).ToList();
         }
-        #endregion
 
-        #region notes
+        public String DeleteNote(Guid note)
+        {
+            var response = _client.DeleteAsync($"note/{note}").Result;
+            return ResponseParse<String>(response);
+        }
         public List<NoteModel> GetPersonalNotes(Guid id)
         {
             var response = _client.GetAsync($"user/{id}/notes/personal").Result;
+            List<NoteModel> notes = ResponseParse<IEnumerable<NoteModel>>(response).OrderBy(x => x._id).ToList();
+            return notes;
+        }
+
+        public List<NoteModel> GetSharesNotes(Guid id)
+        {
+            var response = _client.GetAsync($"user/{id}/notes/shares").Result;
             List<NoteModel> notes = ResponseParse<IEnumerable<NoteModel>>(response).OrderBy(x => x._id).ToList();
             return notes;
         }
@@ -192,6 +199,22 @@ namespace DigDesNote.UI.WPF2Binding.Code
         }
 
         /// <summary>
+        /// Создать заметку
+        /// </summary>
+        /// <param name="note"></param>
+        public NoteModel CreateNote(NoteModel note)
+        {
+            if (ValidateModel(note))
+            {
+                var response = _client.PostAsJsonAsync<NoteModel>("note", note).Result;
+                note = ResponseParse<NoteModel>(response); // Возвращаем новую заметку
+                note.LoginAutor = GetBasicUserInfo(note._creator)._login;
+                return note;
+            }
+            else throw new Exception(GetErrors(result));
+        }
+
+        /// <summary>
         /// Убрать шару от пользователя
         /// </summary>
         /// <param name="userId"></param>
@@ -199,17 +222,30 @@ namespace DigDesNote.UI.WPF2Binding.Code
         public String UnShareNoteToUser(Guid userId, Guid noteId)
         {
             var response = _client.PostAsync($"note/{noteId}/unshare/{userId}", null).Result;
-
             return ResponseParse<String>(response);
         }
-        #endregion
 
-        #region categories
+        public Category CreateCategory(Category cat)
+        {
+            if (ValidateModel(cat))
+            {
+                var response = _client.PostAsJsonAsync("category", cat).Result;
+                return ResponseParse<Category>(response);
+            }
+            else throw new Exception(GetErrors(result));
+        }
 
-        #endregion
+        public String DelCategory(Guid id)
+        {
+            var response = _client.DeleteAsync($"category/{id}").Result;
+            return ResponseParse<String>(response);
+        }
 
-        #region shares
-        #endregion
+        public IEnumerable<NoteModel> GetNotesFromCategory(Guid id)
+        {
+            var response = _client.GetAsync($"note/category/{id}").Result;
+            return ResponseParse<IEnumerable<NoteModel>>(response);
+        }
 
     }
 }

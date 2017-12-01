@@ -4,13 +4,14 @@ using System.Windows.Controls;
 using DigDesNote.Model;
 using DigDesNote.UI.WPF2Binding.Command;
 using System.Windows.Input;
+using System.Configuration;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {
     public class RegisterViewModel : BaseViewModel
     {
 
-        private ServiceClient client;
+        private ServiceClient _client;
         private String _login;
         private String _email;
 
@@ -36,7 +37,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
 
         public RegisterViewModel()
         {
-            client = new ServiceClient("http://localhost:41606/api/");
+            _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
         }
 
         public ICommand RegisterCommand
@@ -55,7 +56,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                     _email = this._email,
                     _pass = box.Password
                 };
-                client.RegisterUser(user);
+                _client.RegisterUser(user);
                 Close(null);
             }
             catch (Exception ex)

@@ -3,11 +3,11 @@
 namespace DigDesNote.UI.WPF2Binding.View
 {
     /// <summary>
-    /// Логика взаимодействия для AddCategoryView.xaml
+    /// Логика взаимодействия для CreateNoteView.xaml
     /// </summary>
-    public partial class AddCategoryView : UserControl
+    public partial class CreateNoteView : UserControl
     {
-        public AddCategoryView()
+        public CreateNoteView()
         {
             InitializeComponent();
         }

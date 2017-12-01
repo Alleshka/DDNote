@@ -22,6 +22,9 @@ namespace DigDesNote.API.Controllers
         private List<ValidationResult> result;
         private ValidationContext context;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public UserController()
         {
             _userRepository = new UserRepository(_connectionString, new NoteRepository(_connectionString, new CategoryRepository(_connectionString)), new CategoryRepository(_connectionString));
@@ -42,6 +45,11 @@ namespace DigDesNote.API.Controllers
             else return user;
         }
 
+        /// <summary>
+        /// Получить основную информацию о пользователе
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/user/login/{login}")]
         public User GetBasicInfo(String login)
@@ -104,7 +112,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/user/{id}/notes/personal")]
         public IEnumerable<Note> GetPersonalNotes(Guid id)
         {
-            Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
+            Logger.Log.Instance.Info($"Получение персональных заметок пользователя {id};");
             if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
             return _userRepository.GetFullUser(id)._notes.Where(x=>x._creator == id);
         }
@@ -118,7 +126,7 @@ namespace DigDesNote.API.Controllers
         [Route("api/user/{id}/notes/shares")]
         public IEnumerable<Note> GetSharesNotes(Guid id)
         {
-            Logger.Log.Instance.Info($"Получение заметок пользователя {id};");
+            Logger.Log.Instance.Info($"Получение расшаренных пользователю {id} заметок;");
             if (_userRepository.GetBasicUser(id) == null) throw new NotFoundException($"Пользователь {id} не найден");
             return _userRepository.GetFullUser(id)._notes.Where(x => x._creator != id);
         }
@@ -184,7 +192,8 @@ namespace DigDesNote.API.Controllers
         /// <summary>
         /// Редактирование пользователя
         /// </summary>
-        /// <param name="user">Содержимое для смены. Необходимо указание id</param>
+        /// <param name="user">Содержимое для смены</param>
+        /// <param name="id">ID пользователя </param>
         /// <returns></returns>
         [HttpPut]
         [Route("api/user/{id}")]
@@ -211,6 +220,11 @@ namespace DigDesNote.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Вход пользователя
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/user/login")]
         public Guid Login([FromBody]User user)

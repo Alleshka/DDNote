@@ -4,9 +4,35 @@
         <name>DigDesNote.API</name>
     </assembly>
     <members>
+        <member name="T:DigDesNote.API.SwaggerConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.SwaggerConfig.Register">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:DigDesNote.API.WebApiConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.WebApiConfig.Register(System.Web.Http.HttpConfiguration)">
+            <summary>
+            
+            </summary>
+            <param name="config"></param>
+        </member>
         <member name="T:DigDesNote.API.Controllers.CategoryController">
             <summary>
             Управление пользователями
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.CategoryController.#ctor">
+            <summary>
+            
             </summary>
         </member>
         <member name="M:DigDesNote.API.Controllers.CategoryController.GetCategoryInfo(System.Guid)">
@@ -33,6 +59,16 @@
             Удалить категорию
             </summary>
             <param name="id"></param>
+        </member>
+        <member name="T:DigDesNote.API.Controllers.NoteController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.#ctor">
+            <summary>
+            
+            </summary>
         </member>
         <member name="M:DigDesNote.API.Controllers.NoteController.GetBasicInfo(System.Guid)">
             <summary>
@@ -93,8 +129,8 @@
             <summary>
             Убрать шару пользователю
             </summary>
-            <param name="id">ID заметки</param>
-            <param name="userId">ID пользователя</param>
+            <param name="id"></param>
+            <param name="userid"></param>
         </member>
         <member name="M:DigDesNote.API.Controllers.NoteController.AddCategory(System.Guid,System.Guid)">
             <summary>
@@ -110,9 +146,21 @@
             <param name="id">ID заметки</param>
             <param name="categoryId">ID категории</param>
         </member>
+        <member name="M:DigDesNote.API.Controllers.NoteController.NotesInCategory(System.Guid)">
+            <summary>
+            Получить все заметки из категории
+            </summary>
+            <param name="id">ID категории</param>
+            <returns></returns>
+        </member>
         <member name="T:DigDesNote.API.Controllers.UserController">
             <summary>
             Управление пользователями
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.#ctor">
+            <summary>
+            
             </summary>
         </member>
         <member name="M:DigDesNote.API.Controllers.UserController.GetBasicInfo(System.Guid)">
@@ -120,6 +168,13 @@
             Получить основную информацию о пользователе (id, логин, почту)
             </summary>
             <param name="id">Уникальные идентификатор пользователя</param>
+            <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.GetBasicInfo(System.String)">
+            <summary>
+            Получить основную информацию о пользователе
+            </summary>
+            <param name="login"></param>
             <returns></returns>
         </member>
         <member name="M:DigDesNote.API.Controllers.UserController.GetFullInfo(System.Guid)">
@@ -174,8 +229,70 @@
             <summary>
             Редактирование пользователя
             </summary>
-            <param name="user">Содержимое для смены. Необходимо указание id</param>
+            <param name="user">Содержимое для смены</param>
+            <param name="id">ID пользователя </param>
             <returns></returns>
+        </member>
+        <member name="M:DigDesNote.API.Controllers.UserController.Login(DigDesNote.Model.User)">
+            <summary>
+            Вход пользователя
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DigDesNote.API.NotFoundException">
+            <summary>
+            Исключение, если объект не найден
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.NotFoundException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:DigDesNote.API.ModelNotValid">
+            <summary>
+            Исключение, если модель не валидна
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.ModelNotValid.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:DigDesNote.API.NoConnectionDB">
+            <summary>
+            Исключение, если нет доступа к БД
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.NoConnectionDB.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:DigDesNote.API.CustomExceptionAtribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.CustomExceptionAtribute.OnException(System.Web.Http.Filters.HttpActionExecutedContext)">
+            <summary>
+            
+            </summary>
+            <param name="actionExecutedContext"></param>
+        </member>
+        <member name="T:DigDesNote.API.WebApiApplication">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DigDesNote.API.WebApiApplication.Application_Start">
+            <summary>
+            
+            </summary>
         </member>
     </members>
 </doc>

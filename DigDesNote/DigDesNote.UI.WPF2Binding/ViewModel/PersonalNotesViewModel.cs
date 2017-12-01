@@ -1,27 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using DigDesNote.Model;
 using DigDesNote.UI.WPF2Binding.Code;
 using DigDesNote.UI.WPF2Binding.Model;
 using DigDesNote.UI.WPF2Binding.Command;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
-
+using System.Configuration;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {
     public class PersonalNotesViewModel : BaseViewModel
     {
-        private ObservableCollection<NoteModel> _personalNotes;
         private ServiceClient _client;
+        // Текущий пользователь
+        private User _curUser;
 
-        public PersonalNotesViewModel(Guid id, ServiceClient client)
-        {
-            _client = client;
-            _personalNotes = new ObservableCollection<NoteModel>(client.GetPersonalNotes(id));
-        }
-
+        // Заметки пользователя
+        private ObservableCollection<NoteModel> _personalNotes;
         public ObservableCollection<NoteModel> PersonalNotes
         {
             get => _personalNotes;
@@ -32,6 +27,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             }
         }
 
+        // Выбранная заметка
         private NoteModel _selectedNote;
         public NoteModel SelectedNote
         {
@@ -43,26 +39,97 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             }
         }
 
-        public ICommand OpenNoteInfoCommand
+        public PersonalNotesViewModel(User curUser)
         {
-            get => new BaseCommand(OpenNoteInfo, null);
-        }
-        public ICommand CreateNoteCommand
-        {
-            get => new BaseCommand(CreateNewNote, null);
+            _curUser = curUser;
+            _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
         }
 
-        private void OpenNoteInfo(object parametress)
+        /// <summary>
+        /// Открыть информацию о заметке
+        /// </summary>
+        public ICommand OpenNoteInfoCommand
         {
-            var note = new NoteInfoViewModel(SelectedNote, _client)
+            get => new BaseCommand((object par) =>
             {
-                Title = "Информация о заметке"
-            };
-            ShowDialog(note);
-            NotifyPropertyChanged("PersonalNotes");
+                var note = new NoteInfoViewModel(SelectedNote)
+                {
+                    Title = "Информация о заметке"
+                };
+                ShowDialog(note);
+                NotifyPropertyChanged("PersonalNotes");
+            });
         }
-        private void CreateNewNote(object parametress)
+
+        /// <summary>
+        /// Открыть окно создания заметки
+        /// </summary>
+        public ICommand CreateNoteCommand
         {
+            get => new BaseCommand((object par)=>
+            {
+                var note = new CreateNoteViewModel(_curUser, _personalNotes, _client);
+                ShowDialog(note);
+            });
+        }
+
+        public ICommand DeleteNoteCommand
+        {
+            get => new BaseCommand((object par)=>
+            {
+                try
+                {
+                    _client.DeleteNote(_selectedNote._id);
+                    _personalNotes.Remove(_selectedNote);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Открыть окно категорий
+        /// </summary>
+        public ICommand OpenViewCategoryCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                ServiceClient _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
+                NoteModel note = par as NoteModel;
+                var cat = new AddCategoryViewModel(note)
+                {
+                    Title = "Каегории"
+                };
+                ShowDialog(cat);
+            });
+        }
+
+        /// <summary>
+        /// Открыть окно шар
+        /// </summary>
+        public ICommand ViewShareListCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                NoteModel _curNote = par as NoteModel;
+                var temp = new SharesListViewModel(_curNote)
+                {
+                    Title = "Доступно для пользователей"
+                };
+                Show(temp);
+            });
+        }
+
+        /// Загрузить персональные заметки
+        public ICommand LoadPersonalNotesCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                PersonalNotes = new ObservableCollection<NoteModel>(_client.GetPersonalNotes(_curUser._id));
+                foreach (var k in PersonalNotes) k.LoginAutor = _curUser._login;
+            });
         }
     }
 }

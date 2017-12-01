@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
-        mc:Ignorable="d">
-    <StackPanel>
-        <ListBox ItemsSource="{Binding UserCategories, Mode=TwoWay}" SelectedItem="{Binding SelectedCategory}">
+        mc:Ignorable="d" Height="115.733" Width="138.667">
+    <StackPanel Margin="0,0,0.4,0" Height="117" VerticalAlignment="Top">
+        <ListBox ItemsSource="{Binding UserCategories, Mode=TwoWay}" SelectedItem="{Binding SelectedCategory}" Height="117" Margin="0,0,0.4,0">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <CheckBox Content="{Binding Path = _name}" IsChecked="{Binding Path=IsFromCategory, Mode=TwoWay}">

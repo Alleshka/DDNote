@@ -8,6 +8,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DigDesNote.API.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class NoteController : ApiController
     {
         private INotesRepository _notesRepository;
@@ -17,6 +20,9 @@ namespace DigDesNote.API.Controllers
         private List<ValidationResult> result;
         private ValidationContext context;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public NoteController()
         {
             _notesRepository = new NoteRepository(_connectionString, new CategoryRepository(_connectionString));
@@ -197,8 +203,8 @@ namespace DigDesNote.API.Controllers
         /// <summary>
         /// Убрать шару пользователю
         /// </summary>
-        /// <param name="id">ID заметки</param>
-        /// <param name="userId">ID пользователя</param>
+        /// <param name="id"></param>
+        /// <param name="userid"></param>
         [HttpPost]
         [CustomExceptionAtribute]
         [Route("api/note/{id}/unshare/{userid}")]
@@ -242,7 +248,11 @@ namespace DigDesNote.API.Controllers
             Logger.Log.Instance.Info($"Заметку {id} удалена из категории {categoryId}");
         }
 
-
+        /// <summary>
+        /// Получить все заметки из категории
+        /// </summary>
+        /// <param name="id">ID категории</param>
+        /// <returns></returns>
         [HttpGet]
         [CustomExceptionAtribute]
         [Route("api/note/category/{id}")]

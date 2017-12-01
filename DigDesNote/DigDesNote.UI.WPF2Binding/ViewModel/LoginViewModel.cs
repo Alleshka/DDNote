@@ -4,23 +4,23 @@ using DigDesNote.UI.WPF2Binding.Command;
 using DigDesNote.UI.WPF2Binding.Code;
 using System.Windows.Controls;
 using DigDesNote.Model;
-using AGLibrary.Files;
+using System.Configuration;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {
+    /// <summary>
+    /// Вьюха входа пользователей
+    /// </summary>
     public class LoginViewModel : BaseViewModel
     {
+
         private ServiceClient client;
 
+        private User _curUser;
+        private UserViewModel _userView;
+
+        // Логин
         private String _login;
-        private bool _status;
-
-        public LoginViewModel()
-        {
-            client = new ServiceClient("http://localhost:41606/api/");
-            _login = "Alleshka";
-        }
-
         public String Login
         {
             get => _login;
@@ -30,6 +30,9 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                 NotifyPropertyChanged("Login");
             }
         }
+
+        // Запоминать ли 
+        private bool _status;
         public bool Status
         {
             get => _status;
@@ -40,49 +43,64 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             }
         }
 
+        public LoginViewModel()
+        {
+            client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
+        }
+
+
         public ICommand CloseCommand
         {
-            get => new BaseCommand(Close, null);
+            get => new BaseCommand(Close);
         }
+
+        /// Вход пользователя
         public ICommand LoginCommand
         {
-            get => new BaseCommand(LoginAction);
+            get => new BaseCommand((object parametres)=>
+            {
+                try
+                {
+                    // Достаём пароль
+                    PasswordBox box = parametres as PasswordBox;
+                    User user = new User()
+                    {
+                        _login = this._login,
+                        _pass = box.Password
+                    };
+                    // Совершаем вход
+                    Guid id = client.Login(user);
+
+                    // Записываем данные входа
+                    System.Configuration.Configuration currentConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    currentConfig.AppSettings.Settings["lastid"].Value = id.ToString();
+                    currentConfig.AppSettings.Settings["remember"].Value = Status.ToString();
+                    currentConfig.Save(ConfigurationSaveMode.Modified);
+                    ConfigurationManager.RefreshSection("appSettings");
+
+                    // Закрываем форму
+                    Close(null);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
+            });
         }
+
+        /// <summary>
+        ///  Открыть окно регистрации
+        /// </summary>
         public ICommand RegisterCommand
         {
-            get => new BaseCommand(OpenRegister);
-        }
-
-        private void LoginAction(object parametres)
-        {
-            try
+            get => new BaseCommand((object parametres)=>
             {
-                PasswordBox box = parametres as PasswordBox;
-                User user = new User()
+                var register = new RegisterViewModel()
                 {
-                    _login = this._login,
-                    _pass = box.Password
+                    Title = "Регистрация"
                 };
-
-                Guid id = client.Login(user);
-
-                FileWork.SaveDataJson<Guid>(id, "adm//curUser.json");
-
-                Close(null);
-                //CloseCommand.Execute(null);
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.Message);
-            }
-        }
-        private void OpenRegister(object parametres)
-        {
-            var register = new RegisterViewModel()
-            {
-                Title = "Регистрация"
-            };
-            ShowDialog(register);
+                ShowDialog(register);
+            });
         }
     }
 }
