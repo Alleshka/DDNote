@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
-             mc:Ignorable="d" Height="160.194" Width="380.583">
-    <StackPanel>
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d" Height="200" Width="200">
+    <Grid Margin="5, 0, 5, 2">
         <ListBox ItemsSource="{Binding NotesFromCategory}" SelectedItem="{Binding SelectedNote}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -17,6 +17,11 @@
                     <MenuItem Header="Информация" Command="{Binding OpenNoteInfoCommand}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding OpenNoteInfoCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </ListBox>
-    </StackPanel>
+    </Grid>
 </UserControl>

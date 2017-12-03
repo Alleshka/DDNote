@@ -5,6 +5,7 @@ using DigDesNote.UI.WPF2Binding.Command;
 using DigDesNote.UI.WPF2Binding.Model;
 using DigDesNote.UI.WPF2Binding.Code;
 using DigDesNote.Model;
+using System.Configuration;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {
@@ -42,10 +43,10 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         private ServiceClient _client;
         private User _user;
 
-        public CreateNoteViewModel(User user, ObservableCollection<NoteModel> usernotes, ServiceClient client)
+        public CreateNoteViewModel(User user, ObservableCollection<NoteModel> usernotes)
         {
+            _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
             _userNotes = usernotes;
-            _client = client;
             _user = user;
         }
 
@@ -59,7 +60,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                     NoteModel temp = new NoteModel()
                     {
                         _title = TitleNote,
-                        _content = TitleNote,
+                        _content = ContentNote,
                         _creator = _user._id
                     };
 

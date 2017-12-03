@@ -51,7 +51,6 @@ namespace DigDesNote.UI.WPF2Binding.Code
 
         public void StartProgram()
         {
-            if (!Directory.Exists("adm")) Directory.CreateDirectory("adm");
         }
 
         /// <summary>

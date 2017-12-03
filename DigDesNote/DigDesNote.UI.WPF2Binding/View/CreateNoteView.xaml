@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
              mc:Ignorable="d" Height="330" Width="365">
     <Grid>
         <StackPanel>
@@ -15,7 +14,7 @@
 
                 <Grid Margin="0, 20, 0, 0">
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">Контент:</TextBlock>
-                    <TextBox Text="{Binding ContentNot, Mode=TwoWay}" Height="200" Width="235" Margin="90,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" AcceptsReturn="True" SpellCheck.IsEnabled="True" Language="ru-ru" TextWrapping="Wrap" AcceptsTab="True"/>
+                    <TextBox Text="{Binding ContentNote, Mode=TwoWay}" Height="200" Width="235" Margin="90,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" AcceptsReturn="True" SpellCheck.IsEnabled="True" Language="ru-ru" TextWrapping="Wrap" AcceptsTab="True" VerticalScrollBarVisibility="Auto"/>
                 </Grid>
             </StackPanel>
         <Button Content="Сохранить" Command="{Binding CreateNewNoteCommand}" Margin="90,250,0,0" Width="235" Height="40" HorizontalAlignment="Left"/>

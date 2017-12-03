@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
         mc:Ignorable="d"
-        Title="{Binding Title}" SizeToContent="WidthAndHeight">
+        Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <Grid>
         <ContentPresenter Content="{Binding }" />
     </Grid>

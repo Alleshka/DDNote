@@ -126,6 +126,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             {
                 try
                 {
+                    if(UserCategories==null) 
                     UserCategories = new ObservableCollection<Category>(_client.GetUserCategories(_user._id));
                 }
                 catch (Exception ex)
@@ -135,11 +136,23 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             });
         }
 
+        public ICommand ReLoadCategoriesCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                UserCategories = null;
+                LoadCategoriesCommand.Execute(null);
+            });
+        }
+
         public ICommand OpenNoteList
         {
             get => new BaseCommand((object par) =>
             {
-                var k = new NoteFromCategoryView(_selectedCategory);
+                var k = new NoteFromCategoryView(_selectedCategory)
+                {
+                    Title="Заметки в категории: "
+                };
                 Show(k);
             });
         }

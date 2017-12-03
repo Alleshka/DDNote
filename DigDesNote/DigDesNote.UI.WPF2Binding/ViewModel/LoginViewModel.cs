@@ -16,9 +16,6 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
 
         private ServiceClient client;
 
-        private User _curUser;
-        private UserViewModel _userView;
-
         // Логин
         private String _login;
         public String Login
@@ -83,6 +80,12 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                 }
                 catch (Exception ex)
                 {
+                    // Записываем данные входа
+                    System.Configuration.Configuration currentConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    currentConfig.AppSettings.Settings["lastid"].Value = new Guid().ToString();
+                    currentConfig.AppSettings.Settings["remember"].Value = false.ToString();
+                    currentConfig.Save(ConfigurationSaveMode.Modified);
+                    ConfigurationManager.RefreshSection("appSettings");
                     System.Windows.MessageBox.Show(ex.Message);
                 }
             });

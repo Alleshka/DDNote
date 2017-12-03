@@ -37,5 +37,9 @@
             <view:NotesFromView HorizontalAlignment="Stretch" />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewmodel:UserViewModel}">
+            <view:UserView HorizontalAlignment="Stretch" />
+        </DataTemplate>
+
     </Application.Resources>
 </Application>

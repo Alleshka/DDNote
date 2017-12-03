@@ -3,6 +3,7 @@ using DigDesNote.UI.WPF2Binding.Command;
 using DigDesNote.UI.WPF2Binding.Code;
 using DigDesNote.UI.WPF2Binding.Model;
 using System.Configuration;
+using DigDesNote.Model;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {
@@ -25,7 +26,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                 NotifyPropertyChanged("CurNoteClone");
             }
         }
-        
+
         public NoteInfoViewModel(NoteModel curNote)
         {
             _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
@@ -33,14 +34,14 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             _curNoteClone = (NoteModel)curNote.Clone();
             _curNote.LoginAutor = _client.GetBasicUserInfo(curNote._creator)._login;
             _curNoteClone.LoginAutor = _curNote.LoginAutor;
-        }      
+        }
 
         /// <summary>
         /// Сохранение заметки
         /// </summary>
         public ICommand UpdateNoteCommand
         {
-            get => new BaseCommand((object par)=>
+            get => new BaseCommand((object par) =>
             {
                 CurNoteClone = _client.UpdateNote(CurNoteClone);
                 _curNoteClone.LoginAutor = _curNote.LoginAutor;
@@ -55,7 +56,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         /// </summary>
         public ICommand CanselCommand
         {
-            get => new BaseCommand((object par)=>
+            get => new BaseCommand((object par) =>
             {
                 if (_curNote._title != _curNoteClone._title) _curNoteClone._title = _curNote._title;
                 if (_curNote._content != _curNoteClone._content) _curNoteClone._content = _curNote._title;
@@ -85,7 +86,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         /// </summary>
         public ICommand ViewShareListCommand
         {
-            get => new BaseCommand((object par)=>
+            get => new BaseCommand((object par) =>
             {
                 ServiceClient _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
                 NoteModel note = par as NoteModel;
@@ -96,6 +97,20 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                 };
 
                 Show(temp);
+            });
+        }
+
+        public ICommand ViewCreatorInfoCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                ServiceClient _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
+                User user = _client.GetBasicUserInfo(_curNoteClone._creator);
+                var tmp = new UserViewModel(user)
+                {
+                    Title = $"Информация о пользователе {user._login}"
+                };
+                ShowDialog(tmp);
             });
         }
     }

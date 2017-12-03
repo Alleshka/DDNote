@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
-             mc:Ignorable="d" Height="144.526" Width="368.978">
-    <Grid Margin="10,0,9.8,0">
+             mc:Ignorable="d" Height="150" Width="250">
+    <Grid Margin="5,0,5,5">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
@@ -13,18 +12,18 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="0.2*"/>
+            <ColumnDefinition Width="0.7*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Логин"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Login, Mode=TwoWay}" Margin="0,10,-0.2,9.6"></TextBox>
+        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Логин: "/>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Login, Mode=TwoWay}" Height="25"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Почта"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Email, Mode=TwoWay}" Margin="0,10,-0.2,9.6"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Почта: "/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Email, Mode=TwoWay}" Height="25"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Пароль"/>
-        <PasswordBox Grid.Row="2" Grid.Column="1" Margin="0,10,-0.2,9.6" x:Name="_password"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Пароль: "/>
+        <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="_password" Height="25"/>
 
         <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="Регистрация" Command="{Binding RegisterCommand}" CommandParameter="{Binding ElementName=_password}"/>
     </Grid>

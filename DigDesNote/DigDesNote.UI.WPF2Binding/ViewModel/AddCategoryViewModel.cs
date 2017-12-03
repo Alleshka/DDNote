@@ -2,7 +2,11 @@
 using System.Linq;
 using DigDesNote.UI.WPF2Binding.Model;
 using DigDesNote.UI.WPF2Binding.Code;
+using DigDesNote.UI.WPF2Binding.Command;
 using System.Configuration;
+using System.Windows.Input;
+using DigDesNote.Model;
+using System;
 
 namespace DigDesNote.UI.WPF2Binding.ViewModel
 {

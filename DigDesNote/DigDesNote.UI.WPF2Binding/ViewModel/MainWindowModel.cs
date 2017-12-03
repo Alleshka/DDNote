@@ -131,6 +131,23 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             });
         }
 
+        /// <summary>
+        /// Открыть окно создания заметки
+        /// </summary>
+        public ICommand CreateNoteCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                if (_personalNotes.PersonalNotes == null)
+                    _personalNotes.LoadPersonalNotesCommand.Execute(null);
+                var note = new CreateNoteViewModel(_curUser, _personalNotes.PersonalNotes)
+                {
+                    Title = "Создать заметку"
+                };
+                ShowDialog(note);
+            });
+        }
+
         public void ReadAllData(Guid curId)
         {
             ServiceClient _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);

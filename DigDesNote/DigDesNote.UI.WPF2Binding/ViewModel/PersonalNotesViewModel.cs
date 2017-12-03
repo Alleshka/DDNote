@@ -68,7 +68,10 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         {
             get => new BaseCommand((object par)=>
             {
-                var note = new CreateNoteViewModel(_curUser, _personalNotes, _client);
+                var note = new CreateNoteViewModel(_curUser, _personalNotes)
+                {
+                    Title = "Создать заметку"
+                };
                 ShowDialog(note);
             });
         }
@@ -127,8 +130,20 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         {
             get => new BaseCommand((object par) =>
             {
-                PersonalNotes = new ObservableCollection<NoteModel>(_client.GetPersonalNotes(_curUser._id));
-                foreach (var k in PersonalNotes) k.LoginAutor = _curUser._login;
+                if (PersonalNotes == null)
+                {
+                    PersonalNotes = new ObservableCollection<NoteModel>(_client.GetPersonalNotes(_curUser._id));
+                    foreach (var k in PersonalNotes) k.LoginAutor = _curUser._login;
+                }
+            });
+        }
+
+        public ICommand ReLoadPersonalNotesCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                PersonalNotes = null;
+                LoadPersonalNotesCommand.Execute(null);
             });
         }
     }

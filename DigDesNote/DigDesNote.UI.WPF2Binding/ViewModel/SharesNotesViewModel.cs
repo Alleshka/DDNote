@@ -59,6 +59,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
                 {
                     Title = "Информация о заметке"
                 };
+
                 ShowDialog(note);
                 NotifyPropertyChanged("PersonalNotes");
             });
@@ -83,8 +84,20 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         {
             get => new BaseCommand((object par) =>
             {
-                SharesNotes = new ObservableCollection<NoteModel>(_client.GetSharesNotes(_curUser._id));
-                foreach (var k in _sharesNotes) k.LoginAutor = _client.GetBasicUserInfo(k._creator)._login;
+                if (SharesNotes == null)
+                {
+                    SharesNotes = new ObservableCollection<NoteModel>(_client.GetSharesNotes(_curUser._id));
+                    foreach (var k in _sharesNotes) k.LoginAutor = _client.GetBasicUserInfo(k._creator)._login;
+                }
+            });
+        }
+
+        public ICommand ReLoadSharesNotesCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                SharesNotes = null;
+                LoadSharesNotesCommand.Execute(null);
             });
         }
     }

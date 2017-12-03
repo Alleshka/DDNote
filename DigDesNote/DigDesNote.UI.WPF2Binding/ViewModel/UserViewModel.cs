@@ -14,6 +14,14 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         }
 
         private User _curUser;
+        public User User
+        {
+            get => _curUser;
+            set
+            {
+
+            }
+        }
 
         public String Login
         {
@@ -29,6 +37,14 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             get => new BaseCommand((object par) =>
             {
                 System.Windows.Clipboard.SetText(UserId.ToString());
+            });
+        }
+
+        public ICommand CloseCommand
+        {
+            get => new BaseCommand((object par) =>
+            {
+                this.Close(null);
             });
         }
     }

@@ -4,14 +4,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DigDesNote.UI.WPF2Binding.View"
-        xmlns:note="clr-namespace:DigDesNote.UI.WPF2Binding.ViewModel"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
-        Height="350.915" Width="357.281">
-    <Grid>
+        Height="400" Width="450">
+    <Grid Margin="10,0,10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="5*"/>
+            <RowDefinition Height="10*"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="2*"/>
@@ -20,29 +19,40 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="0.3*"/>
+            <ColumnDefinition Width="0.7*"/>
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Заголовок: " Grid.ColumnSpan="2"/>
         <TextBox Grid.Row="0" Text="{Binding CurNoteClone._title}" Grid.Column="1"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Содержимое: " Grid.ColumnSpan="2"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurNoteClone._content}"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurNoteClone._content}" AcceptsReturn="True" SpellCheck.IsEnabled="True" Language="ru-ru" TextWrapping="Wrap" AcceptsTab="True" VerticalScrollBarVisibility="Auto"/>
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Создано: " VerticalAlignment="Center" Grid.ColumnSpan="2" Height="16"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurNoteClone._created}" VerticalAlignment="Center" Height="16"/>
-
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurNoteClone._created}" VerticalAlignment="Center"/>
+        
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Создано: " VerticalAlignment="Center" Grid.ColumnSpan="2" Height="16"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CurNoteClone._updated}" VerticalAlignment="Center" Height="16"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CurNoteClone._updated}" VerticalAlignment="Center"/>
 
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Создатель: " VerticalAlignment="Center" Grid.ColumnSpan="2" Height="16"/>
-        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding CurNoteClone.LoginAutor}" VerticalAlignment="Center" Height="16"/>
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding CurNoteClone.LoginAutor}" VerticalAlignment="Center" Height="16">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Информация" Command="{Binding ViewCreatorInfoCommand}"/>
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonDown">
+                    <i:InvokeCommandAction Command="{Binding ViewCreatorInfoCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBlock>
 
-        <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Категории" Command="{Binding OpenViewCategoryCommand}" CommandParameter="{Binding CurNoteClone}" Margin="10,2,-0.4,0.6"/>
-        <Button Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Content="Пользователи" Command="{Binding ViewShareListCommand}" CommandParameter="{Binding CurNoteClone}" Margin="10,2,-0.4,0.6"/>
+        <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Категории" Command="{Binding OpenViewCategoryCommand}" CommandParameter="{Binding CurNoteClone}"/>
+        <Button Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Content="Пользователи" Command="{Binding ViewShareListCommand}" CommandParameter="{Binding CurNoteClone}"/>
         
-        <Button Grid.Row="7" Grid.Column="0" Content="Сохранить" Command="{Binding UpdateNoteCommand}" Grid.ColumnSpan="2" Margin="0,0.8,164.6,0.2"/>
-        <Button Grid.Row="7" Grid.Column="1" Content="Отмена" Command="{Binding CanselCommand}" Margin="0.2,0.8,-0.4,0.2"/>
+        <Button Grid.Row="7" Grid.Column="1" Content="Сохранить" Command="{Binding UpdateNoteCommand}"/>
+        <Button Grid.Row="7" Grid.Column="0" Content="Отмена" Command="{Binding CanselCommand}"/>
     </Grid>
 </UserControl>
