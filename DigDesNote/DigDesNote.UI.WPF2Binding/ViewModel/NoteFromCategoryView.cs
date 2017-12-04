@@ -48,12 +48,22 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         {
             get => new BaseCommand((object par) =>
             {
-                var note = new NoteInfoViewModel(SelectedNote)
+                try
                 {
-                    Title = "Информация о заметке"
-                };
-                ShowDialog(note);
-                NotifyPropertyChanged("PersonalNotes");
+                    if (SelectedNote == null) throw new Exception("Необходимо выбрать заметку");
+                    if (NotesFromCategory.Count == 0) throw new Exception("Заметки отсутствуют");
+
+                    var note = new NoteInfoViewModel(SelectedNote)
+                    {
+                        Title = "Информация о заметке"
+                    };
+                    ShowDialog(note);
+                    NotifyPropertyChanged("PersonalNotes");
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
             });
         }
     }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="451.676" Width="765.299">
+        Title="MainWindow" Height="450" Width="765">
     <!--Триггер закрытия окна -->
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
@@ -60,8 +60,13 @@
                         <i:InvokeCommandAction Command="{Binding LoadCategoriesCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <StackPanel Margin="0, 0, 5, 0">
-                    <ListBox ItemsSource="{Binding UserCategories}" SelectedItem="{Binding SelectedCategory}" Height="275">
+                <Grid Margin="5, 0, 5, 2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.8*"/>
+                        <RowDefinition Height="0.1*"/>
+                        <RowDefinition Height="0.1*"/>
+                    </Grid.RowDefinitions>
+                    <ListBox ItemsSource="{Binding UserCategories}" SelectedItem="{Binding SelectedCategory}" Grid.Row="0">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding OpenNoteList}"/>
@@ -80,9 +85,9 @@
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>
-                    <TextBox Text="{Binding NewNameCat, Mode=TwoWay}" Height="35"/>
-                    <Button Command="{Binding CreateCategoryCommand}" Content="Добавить"/>
-                </StackPanel>
+                    <TextBox Text="{Binding NewNameCat, Mode=TwoWay}" Grid.Row="1"/>
+                    <Button Command="{Binding CreateCategoryCommand}" Content="Добавить" Grid.Row="2"/>
+                </Grid>
             </Expander>
 
             <GridSplitter Width="5" Grid.Column="0"></GridSplitter>

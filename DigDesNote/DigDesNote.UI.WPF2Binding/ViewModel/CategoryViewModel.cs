@@ -105,7 +105,9 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             {
                 try
                 {
-                    if (SelectedCategory == null) throw new Exception("Категории отсутствуют");
+                    if (SelectedCategory == null) throw new Exception("Необходимо выбрать категорию");
+                    if (_userCategorues.Count == 0) throw new Exception("Категории отсутствуют");
+
                     ServiceClient _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
                     _client.DelCategory(_selectedCategory._id);
                     _userCategorues.Remove(_selectedCategory);
@@ -149,11 +151,21 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         {
             get => new BaseCommand((object par) =>
             {
-                var k = new NoteFromCategoryView(_selectedCategory)
+                try
                 {
-                    Title="Заметки в категории: "
-                };
-                Show(k);
+                    if (SelectedCategory == null) throw new Exception("Необходимо выбрать категорию");
+                    if (_userCategorues.Count == 0) throw new Exception("Категории отсутствуют");
+
+                    var k = new NoteFromCategoryView(_selectedCategory)
+                    {
+                        Title = "Заметки в категории: "
+                    };
+                    Show(k);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
             });
         }
     }

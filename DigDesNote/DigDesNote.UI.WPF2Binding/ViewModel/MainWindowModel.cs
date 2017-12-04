@@ -163,19 +163,38 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
 
         public MainWindowModel(System.Windows.Window mainWindow)
         {
-            // Читаем последний ID
-            Guid.TryParse(ConfigurationManager.AppSettings["lastid"], out Guid curId);
-            if(Guid.Empty == curId) CreateLoginWindow.Execute(mainWindow);
-
-            // Вторая попытка
-            Guid.TryParse(ConfigurationManager.AppSettings["lastid"], out curId);
-            if (Guid.Empty == curId)
+            try
             {
-                mainWindow.Close(); // Если ID == 0
-                return;
-            }
+                // Читаем последний ID
+                Guid.TryParse(ConfigurationManager.AppSettings["lastid"], out Guid curId);
 
-            ReadAllData(curId);
+                if (Guid.Empty == curId)
+                {
+                    CreateLoginWindow.Execute(mainWindow);
+
+                    // Вторая попытка
+                    Guid.TryParse(ConfigurationManager.AppSettings["lastid"], out curId);
+                    if (Guid.Empty == curId)
+                    {
+                        mainWindow.Close(); // Если ID == 0
+                        return;
+                    }
+                }
+
+                ReadAllData(curId);
+            }
+            catch (Exception ex)
+            {
+                // Записываем данные входа
+                System.Configuration.Configuration currentConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                currentConfig.AppSettings.Settings["lastid"].Value = new Guid().ToString();
+                currentConfig.AppSettings.Settings["remember"].Value = false.ToString();
+                currentConfig.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+                System.Windows.MessageBox.Show(ex.Message);
+
+                System.Windows.MessageBox.Show("Ошибка входа");
+            }
         }
     }
 }

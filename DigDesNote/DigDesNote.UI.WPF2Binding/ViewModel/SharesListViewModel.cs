@@ -57,6 +57,7 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             _client = new ServiceClient(ConfigurationManager.AppSettings["hostdomain"]);
             _note = note;
             _userList = new ObservableCollection<User>(_client.GetNoteShares(_note._id));
+            Login = "";
         }
 
         /// <summary>
@@ -68,6 +69,8 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
             {
                 try
                 {
+                    if (Login.Length == 0) throw new Exception("Необходимо ввести логин");
+
                     _client.ShareNoteToUser(Login, _note._id);
                     _userList.Add(_client.GetBasicUserInfo(Login));
                     Login = "";
@@ -86,9 +89,18 @@ namespace DigDesNote.UI.WPF2Binding.ViewModel
         {
             get => new BaseCommand((object par)=>
             {
-                _client.UnShareNoteToUser(SelectedUser._id, _note._id);
-                _userList.Remove(SelectedUser);
-                Login = "";
+                try
+                {
+                    if (UserList.Count == 0) throw new Exception("Пользователи отсутствуют");
+                    if (SelectedUser == null) throw new Exception("Необходимо выбрать пользователя");
+                    _client.UnShareNoteToUser(SelectedUser._id, _note._id);
+                    _userList.Remove(SelectedUser);
+                    Login = "";
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
             });
         }
     }
